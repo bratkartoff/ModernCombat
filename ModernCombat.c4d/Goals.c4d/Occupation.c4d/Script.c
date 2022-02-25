@@ -8,6 +8,7 @@ local iWarningTickets;
 local aTicket;
 local aTeamTimers;
 local fTicketBleed;
+local fFrontlinesMode;
 
 static const GOCC_Horizontal		= 1;
 static const GOCC_Vertical		= 2;
@@ -41,6 +42,7 @@ protected func Initialize()
   //Ticketzahl vorgeben
   iStartTickets = StartTickets();
   fTicketBleed = true;
+  fFrontlinesMode = false;
 
   return _inherited();
 }
@@ -234,6 +236,12 @@ private func OpenGoalMenu(id dummy, int iSelection)
   else
     AddMenuItem("<c 777777>$TicketBleed$</c>", "ChangeTicketBleed", SM06, pClonk, 0, true, "$TicketBleedDesc$");
 
+  //Frontlines-Modus umschalten
+  if(fFrontlinesMode)
+    AddMenuItem("$FrontlinesMode$", "ChangeFrontlinesMode", SM27, pClonk, 0, false, "$FrontlinesModeDesc$");
+  else
+    AddMenuItem("<c 777777>$FrontlinesMode$</c>", "ChangeFrontlinesMode", SM06, pClonk, 0, true, "$FrontlinesModeDesc$");
+
   //Fertig
   AddMenuItem("$Finished$", "ConfigFinished", GetID(), pClonk,0,0,"$Finished$",2,3);
 
@@ -259,25 +267,32 @@ private func ChangeStartTickets(id dummy, int iChange)
 
 private func ChangeTicketBleed(id dummy, bool fChange)
 {
+  fTicketBleed = fChange;
+  GoalMenuChangeVariable();
+  //Menü erneut öffnen
+  OpenGoalMenu(0, 3);
+}
+
+
+private func ChangeFrontlinesMode(id dummy, bool fChange)
+{
+  fFrontlinesMode = fChange;
+  GoalMenuChangeVariable();
+  //Menü erneut öffnen
+  OpenGoalMenu(0, 4);
+}
+
+
+// Hilfsfunktion
+private func GoalMenuChangeVariable() {
   //Sound
   Sound("Grab",1,0,0,1);
 
   //Zeitlimit umschalten und Spielzielbeschreibung aktualisieren
   var chos = FindObject(CHOS);
-  if(fChange)
-  {
-    fTicketBleed = true;
-    if(chos) chos->SetGoalDesc(GetID(this), GoalDescription());
-  }
-  else
-  {
-    fTicketBleed = false;
-    if(chos) chos->SetGoalDesc(GetID(this), GoalDescription());
-  }
-
-  //Menü erneut öffnen
-  OpenGoalMenu(0, 3);
+  if(chos) chos->SetGoalDesc(GetID(this), GoalDescription());
 }
+
 
 /* Scoreboard */
 

@@ -187,14 +187,18 @@ protected func Timer()
     if(!PathFree4K(GetX(this()),GetY(this())-GetDefHeight(GetID())/2,GetX(clonk),GetY(clonk),4)) continue;
     if(GetPlayerTeam(GetOwner(clonk)) == team)
     {
-      friends++;
-      aFriends[GetLength(aFriends)] = clonk;
+      if(IsCaptureableBy(team)) {
+        friends++;
+        aFriends[GetLength(aFriends)] = clonk;
+      }
     }
     else
     {
-      enemys++;
       opposition = GetPlayerTeam(GetOwner(clonk));
-      aEnemies[GetLength(aEnemies)] = clonk;
+      if(IsCaptureableBy(opposition)) {
+        enemys++;
+        aEnemies[GetLength(aEnemies)] = clonk;
+      }
     }
   }
   attacker = opposition;
@@ -277,6 +281,39 @@ protected func Timer()
     //Neu: Einstellen
     if(new) pAttackers[GetLength(pAttackers)] = clonk;
   }
+}
+
+public func IsCaptureableBy(int iTeam) {
+  // todo: performance: get neighbors once
+  //    initialize probably doesn't work (right neighbors don't exist)
+  //        todo: test
+  // todo: groups
+  // groups:
+  //    explicit or automatic grouping?
+  //    data structure: array of array of flags
+
+  // aFlag is a global array that is set in the scenario script
+  var index = GetIndexOf(this, aFlag);
+  var neighbors = [];
+  if (index > 0)
+    neighbors[] = aFlag[index - 1];
+  if (index + 1 < GetLength(aFlag))
+    neighbors[] = aFlag[index + 1];
+  for (var flag in neighbors) {
+    if (flag->GetTeam() == iTeam && flag->GetProcess() == 100)
+      return true;
+  }
+  var n = GetLength(neighbors);
+  // always allow (re)capturing the start flags without a neighboring flag
+  // process != 100 prevents the enemy team from capturing it
+  // if they don't have a neighboring flag
+  // and complete capture by the enemy team is a win anyway
+  if (n == 1) {
+    return process != 100;
+  }
+  if (n == 0)
+    return 0; // map is broken
+  return false;
 }
 
 public func Capture(int iTeam, bool bSilent)

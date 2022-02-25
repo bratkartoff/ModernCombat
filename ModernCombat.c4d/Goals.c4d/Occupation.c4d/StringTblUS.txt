@@ -14,6 +14,8 @@ MoreTickets=more Tickets
 LessTickets=less Tickets
 TicketBleed=Ticket Bleed
 TicketBleedDesc=Teams with less flag posts lose tickets over time.
+FrontlinesMode=Frontlines Mode
+FrontlinesModeDesc=Flags posts can only be captured if you are in control of a neighbouring flag post.
 Finished=Finished
 
 // End of round
