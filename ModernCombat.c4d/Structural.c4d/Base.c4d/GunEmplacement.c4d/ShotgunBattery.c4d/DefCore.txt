@@ -1,0 +1,15 @@
+[DefCore]
+id=SBYW
+Version=4,9,10,7
+Name=Shotgun Battery
+Category=C4D_Object
+Width=16
+Height=12
+Offset=-8,-6
+Vertices=4
+VertexX=-3,-4,8,8
+VertexY=-4,5,-3,5
+VertexFriction=100,100,100,100
+Value=150
+Mass=30
+Picture=0,12,138,134

@@ -1,0 +1,3 @@
+Rakete mit mittlerer Reichweite und kleiner Explosion.
+
+Wird immer in einer Salve von 4 Raketen abgefeuert.

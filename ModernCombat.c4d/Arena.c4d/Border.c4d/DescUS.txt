@@ -1,0 +1,1 @@
+A border prevents clonks from leaving the playing area by killing them directly or time-delayed as soon as they enter a certain area.

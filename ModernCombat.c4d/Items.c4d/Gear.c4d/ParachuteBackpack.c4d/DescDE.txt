@@ -1,0 +1,4 @@
+Der Fallschirmrucksack bewahrt den Clonk vor Fallschaden und macht den Fall kontrollierbar.
+
+[Doppelgraben] zum Anlegen. [Doppelspringen] zum Öffnen des Fallschirms während der Clonk mit genügend Platz und Geschwindigkeit fällt.
+Öffnen im Sturz nicht möglich.

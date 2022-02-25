@@ -1,0 +1,3 @@
+Injured clonks are close to death and incapable of acting. They can be revived by a lifesaving shock by defibrillators.
+
+Grab and press [Jump] to automatically reanimate if defibrillators are available, [Dig] to search the injured clonk.

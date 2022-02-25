@@ -1,0 +1,16 @@
+[DefCore]
+id=LBWK
+Version=4,9,10,7
+Name=Wreck
+Category=C4D_Vehicle
+Picture=0,42,110,41
+Offset=-57,-21
+Vertices=6
+VertexY=-18,-18,-18,16,16,16
+Width=113
+Height=42
+Mass=500
+VertexX=-75,0,75,-75,0,75
+VertexFriction=100,100,100,100
+Rotate=1
+NoBurnDecay=1

@@ -1,0 +1,1 @@
+Respawns any vehicle on its starting position after it has been destroyed or erased.

@@ -1,0 +1,17 @@
+[DefCore]
+id=PBWK
+Version=4,9,10,7
+Name=Wreck
+Category=C4D_Vehicle
+Picture=0,0,77,21
+Offset=-40,-11
+Vertices=5
+VertexX=0,26,-27,26,-27
+VertexY=-1,9,9,10,10
+Width=77
+Height=21
+Mass=100
+VertexCNAT=80,10,9,6,5
+VertexFriction=0,80,80,80,80
+Float=3
+Rotate=1

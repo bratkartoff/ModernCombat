@@ -1,0 +1,3 @@
+Controls and moves a patrol boat.
+
+Grab and press [Left]/[Right] to sail or [Stop] to stop the engine.

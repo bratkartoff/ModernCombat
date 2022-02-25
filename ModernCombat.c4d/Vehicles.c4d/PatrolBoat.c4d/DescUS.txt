@@ -1,0 +1,3 @@
+Allows for fast transports on waterways.
+
+Grab the boat engine and press [Left]/[Right] to sail or [Stop] to stop the engine.

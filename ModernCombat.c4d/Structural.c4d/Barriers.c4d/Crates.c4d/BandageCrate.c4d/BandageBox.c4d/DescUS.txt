@@ -1,0 +1,3 @@
+A small bandage to treat a clonk.
+
+Automatically heals on contact. Can merge with FAPs.

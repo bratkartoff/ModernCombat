@@ -1,0 +1,3 @@
+The faster a clonk hits the ground, the more he takes damage by it.
+
+Every class in the class selection also recives a parachute backpack.

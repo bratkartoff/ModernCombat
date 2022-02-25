@@ -1,0 +1,4 @@
+Powerful defence position against incoming enemies.
+
+[Jump] to enter, [Double Dig] to exit.
+[Left]/[Right] to adjust and [Throw] to fire the weapon.

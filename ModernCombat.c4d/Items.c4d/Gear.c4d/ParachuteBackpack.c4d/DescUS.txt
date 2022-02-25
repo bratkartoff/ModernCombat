@@ -1,0 +1,4 @@
+The parachute backpack prevents a clonk from reciving fall damage and makes the fall controllable.
+
+[Double Dig] to buckle on. [Double Jump] to activate as the clonk falls at a higher speed with free space below him.
+Can not be activated while thumbling.

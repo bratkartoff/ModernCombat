@@ -1,0 +1,3 @@
+Missile with long range and big explosion, giving extra damage to vehicles and structures.
+
+Can be guided by the shooter.

@@ -1,0 +1,4 @@
+Regelt die Menge und Komplexität von bestimmten Effekten und Partikeln.
+
+Das Heruntersetzen der Effektstufe kann bei langsameren Netzwerkrunden gegebenenfalls die Geschwindigkeit verbessern.
+Stufe 3 stellt die normale Effektdarbietung dar.

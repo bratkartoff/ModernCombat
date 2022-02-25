@@ -1,0 +1,15 @@
+[Action]
+Name=Glow
+Length=24
+Delay=20
+Facet=0,40,6,27,17,7
+FacetBase=1
+NextAction=Glow
+
+[Action]
+Name=Destroyed
+Procedure=NONE
+Length=4
+Delay=20
+NextAction=Destroyed
+Facet=29,0,35,40

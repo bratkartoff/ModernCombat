@@ -1,0 +1,3 @@
+Steuert und bewegt ein Patrouillenboot.
+
+Anfassen und [Links]/[Rechts] zum segeln oder [Stop] zum Abschalten des Motors.

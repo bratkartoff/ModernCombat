@@ -1,0 +1,3 @@
+Rakete mit großer Reichweite und mittlerer Explosion.
+
+Kann vom Schützen gelenkt werden oder Peilsender verfolgen.

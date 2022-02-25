@@ -1,0 +1,3 @@
+Missile with long range and small explosion.
+
+Can be guided by the shooter or lock onto tracer darts and is fired in a burst of 4.

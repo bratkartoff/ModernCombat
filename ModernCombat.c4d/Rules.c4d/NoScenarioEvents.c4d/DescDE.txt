@@ -1,0 +1,1 @@
+Säulen und Sendemasten können nicht zerstört werden sodass bestimmte Szenario-Events nicht verfügbar sind.

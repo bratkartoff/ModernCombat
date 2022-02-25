@@ -1,0 +1,37 @@
+#Steuerung
+CtrlLeft=Links
+CtrlRight=Rechts
+CtrlUp=Springen
+CtrlDown=Stop
+CtrlLeftD=Doppellinks
+CtrlRightD=Doppelrechts
+CtrlDigD=Platz wechseln
+CtrlUpD=Doppelspringen
+CtrlDownD=Doppelstop
+CtrlThrow=Aktion
+
+#Sitze
+Seats=Sitze
+SeatOccupied=Sitz bereits belegt.
+Exit=Aussteigen
+ExitWithWeapon=Mit Waffe aussteigen
+ExitDesc=Helikopter verlassen.
+Pilot=Pilot
+PilotDesc=Helikopter steuern.
+Operator=Operator
+OperatorDesc=Inventarwaffen montieren und einsetzen.
+ExitRope=Abseilen
+ExitRopeDesc=Helikopter durch Abseilen verlassen.
+
+#Aktionen
+Flares=Flareabwurf
+HUD=HUD ein-ausblenden
+RocketLauncher=Raketenwerfer
+Reload=Nachladen
+Extinguisher=Feuerlöscher
+BombDrop=Bombenabwurf
+NotAbleToDrop=Bombenabwurf hier nicht möglich!
+MountWeapon=Waffe montieren
+UnmountWeapon=Waffe abmontieren
+NoWeapon=Keine montierbare Waffe vorhanden!
+Spotlight=Scheinwerfer

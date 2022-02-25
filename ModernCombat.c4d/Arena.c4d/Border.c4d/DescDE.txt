@@ -1,0 +1,1 @@
+Eine Grenze hindert Clonks daran das Spielfeld zu verlassen, indem sie zeitverzögert oder sofort eliminiert werden, wenn sie sich in einem bestimmten Bereich aufhalten.

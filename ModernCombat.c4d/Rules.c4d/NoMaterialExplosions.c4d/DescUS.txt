@@ -1,0 +1,1 @@
+Explosions can not destroy any landscape materials. Depending on the scenario, it may be possible to dig it free by clonk though.

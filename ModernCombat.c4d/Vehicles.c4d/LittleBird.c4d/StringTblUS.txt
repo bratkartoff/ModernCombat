@@ -1,0 +1,37 @@
+#Control
+CtrlLeft=Left
+CtrlRight=Right
+CtrlUp=Up
+CtrlDown=Down
+CtrlLeftD=Double left
+CtrlRightD=Double right
+CtrlDigD=Change seat
+CtrlUpD=Double up
+CtrlDownD=Double down
+CtrlThrow=Action
+
+#Seats
+Seats=Seats
+SeatOccupied=Seat already occupied.
+Exit=Exit
+ExitWithWeapon=Exit with Weapon
+ExitDesc=Exit helicopter.
+Pilot=Pilot
+PilotDesc=Pilot helicopter.
+Operator=Operator
+OperatorDesc=Mount inventory weapons for use.
+ExitRope=Rappel
+ExitRopeDesc=Rappel out of the helicopter.
+
+#Actions
+Flares=Flare Drop
+HUD=Fade HUD in/out
+RocketLauncher=Rocket Launcher
+Reload=Reload
+Extinguisher=Extinguisher
+BombDrop=Bomb Drop
+NotAbleToDrop=Not able to drop bomb here!
+MountWeapon=Mount Weapon
+UnmountWeapon=Unmount Weapon
+NoWeapon=No mountable weapon available!
+Spotlight=Spotlight

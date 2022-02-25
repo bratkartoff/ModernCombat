@@ -1,0 +1,37 @@
+#Steuerung
+CtrlLeft=Links
+CtrlRight=Rechts
+CtrlUp=Springen
+CtrlDown=Stop
+CtrlLeftD=Doppellinks
+CtrlRightD=Doppelrechts
+CtrlDigD=Platz wechseln
+CtrlUpD=Doppelspringen
+CtrlDownD=Doppelstop
+CtrlThrow=Aktion
+
+#Sitze
+Seats=Sitze
+SeatOccupied=Sitz bereits belegt.
+Exit=Aussteigen
+ExitDesc=Helikopter verlassen.
+Pilot=Pilot
+PilotDesc=Helikopter steuern.
+Gunner=Schütze
+GunnerDesc=Maschinenkanone bedienen.
+Coordinator=Koordinator
+CoordinatorDesc=Raketenwerfer mit optisch lenkbaren Raketen bedienen.
+Passenger=Passagier
+PassengerDesc=Sitzplatz mit Seil zum Ausklinken.
+ExitRope=Abseilen
+ExitRopeDesc=Helikopter durch Abseilen verlassen.
+
+#Aktionen
+Flares=Flareabwurf
+Smoke=Rauchwand
+HUD=HUD ein-ausblenden
+Reload=Nachladen
+Spotlight=Scheinwerfer
+Extinguisher=Feuerlöscher
+PilotRequired=Pilot erforderlich!
+NotEnoughDamage=Fahrzeug nicht in Brand!

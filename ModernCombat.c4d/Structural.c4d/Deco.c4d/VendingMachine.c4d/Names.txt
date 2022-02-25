@@ -1,0 +1,2 @@
+DE:Getränkeautomat
+US:Vending Machine

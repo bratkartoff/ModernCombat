@@ -1,0 +1,3 @@
+Rakete mit großer Reichweite und kleiner Explosion.
+
+Kann vom Schützen gelenkt werden oder Peilsender verfolgen und wird immer in einer Salve von 4 Raketen abgefeuert.

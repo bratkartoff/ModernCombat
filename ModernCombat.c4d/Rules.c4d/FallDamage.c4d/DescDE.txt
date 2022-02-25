@@ -1,0 +1,3 @@
+Je schneller ein Clonk aufprallt, desto mehr Schaden nimmt er dadurch.
+
+Jede Klasse in der Klassenwahl erhält zudem einen Fallschirmrucksack.

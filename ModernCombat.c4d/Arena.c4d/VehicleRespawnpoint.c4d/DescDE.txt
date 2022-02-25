@@ -1,0 +1,1 @@
+Erstellt ein beliebiges Fahrzeug neu an seiner Anfangsposition sobald es zerstört oder entfernt wurde.

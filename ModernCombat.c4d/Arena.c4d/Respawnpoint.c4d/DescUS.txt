@@ -1,0 +1,1 @@
+Respawns any object at its starting position after beeing destroyed or removed.

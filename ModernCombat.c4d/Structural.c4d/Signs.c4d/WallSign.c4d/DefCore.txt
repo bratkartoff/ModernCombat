@@ -1,0 +1,9 @@
+[DefCore]
+id=WLSN
+Version=4,9,10,7
+Name=Wall Sign
+Category=C4D_StaticBack
+Width=20
+Height=20
+Offset=-10,-10
+Picture=0,0,20,20

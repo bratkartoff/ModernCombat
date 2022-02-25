@@ -1,0 +1,1 @@
+Injured clonks can commit suicide which evades waiting times but also denies reanimations.

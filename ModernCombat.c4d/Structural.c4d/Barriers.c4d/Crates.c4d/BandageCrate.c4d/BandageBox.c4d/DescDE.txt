@@ -1,0 +1,3 @@
+Ein kleiner Verband zur Versorgung eines Clonks.
+
+Heilt automatisch bei Kontakt. Kann mit EHPs zusammengelegt werden.

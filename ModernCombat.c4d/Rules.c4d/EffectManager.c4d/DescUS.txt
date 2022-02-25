@@ -1,0 +1,4 @@
+Manages the amount and complexity of certain effects and particles.
+
+Reducing the effect level may improve the performance of slow network rounds.
+Level 3 represents normal effect presentation.

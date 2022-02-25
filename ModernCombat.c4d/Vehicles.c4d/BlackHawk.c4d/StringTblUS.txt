@@ -1,0 +1,37 @@
+#Control
+CtrlLeft=Left
+CtrlRight=Right
+CtrlUp=Up
+CtrlDown=Down
+CtrlLeftD=Double left
+CtrlRightD=Double right
+CtrlDigD=Change seat
+CtrlUpD=Double up
+CtrlDownD=Double down
+CtrlThrow=Action
+
+#Seats
+Seats=Seats
+SeatOccupied=Seat already occupied.
+Exit=Exit
+ExitDesc=Exit helicopter.
+Pilot=Pilot
+PilotDesc=Pilot helicopter.
+Gunner=Gunner
+GunnerDesc=Operate automatic cannon.
+Coordinator=Coordinator
+CoordinatorDesc=Operate rocket launcher with optical guided missiles.
+Passenger=Passenger
+PassengerDesc=Seat with rope to rappel down.
+ExitRope=Rappel
+ExitRopeDesc=Rappel out of the helicopter.
+
+#Actions
+Flares=Flare Drop
+Smoke=Smokescreen
+HUD=Fade HUD in/out
+Reload=Reload
+Spotlight=Spotlight
+Extinguisher=Extinguisher
+PilotRequired=Pilot required!
+NotEnoughDamage=Vehicle not on fire!

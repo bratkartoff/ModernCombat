@@ -1,0 +1,52 @@
+[DefCore]
+id=LBRD
+Version=4,9,10,7
+Name=Little Bird
+Category=C4D_Vehicle|C4D_SelectVehicle
+Picture=576,90,110,44
+Value=350
+Mass=1400
+MaxUserSelect=2
+Height=45
+Width=140
+Offset=-70,-23
+Collection=-59,-22,120,16
+ContactCalls=1
+Rotate=1
+BorderBound=1
+UprightAttach=16
+NoPushEnter=1
+VehicleControl=2
+SilentCommands=1
+NoStabilize=1
+NoBurnDecay=1
+ContactIncinerate=0
+AttractLightning=1
+NoSell=1
+NoGet=1
+RotatedEntrance=1
+NoTransferZones=1
+Exclusive=0
+Timer=1
+TimerCall=TimerCall
+IncompleteActivity=1
+ColorByOwner=1
+Placement=0
+Vertices=15
+#              |  0|  1|   2|   3|   4|   5|   6|    7|   8|   9|   A|   B|   C|   D|   E|
+#--------------|---|---|----|----|----|----|----|-----|----|----|----|----|----|----|----|
+VertexX=        -23, 44,  -1,  14,  13, -34, -44,  -65, -37, -25,  57,  42,  65,  67,  59
+VertexY=         21,  3,  21,  21,  10,  21,   7,  -17,  -3,  -8,   0, -17, -17,  -3,  13
+VertexFriction=  20, 50,  20,  20,  50,  20,  50,  100, 100, 100, 100, 100, 100, 100,  50
+VertexCNAT=       8,  8,   8,   8,   8,   8,   9,    5,   4,   4,   6,   4,   7,  14,  10
+# Vertex-Preview
+#                                             C
+#   7-------------------------------B         |
+#         .9---------|--------._          ---/¯/--D
+#       .8        /¯¯¯¯¯\       '-----------/ /A
+#      6          \_____/                      /
+#       '^5----0----2-------3-----^''4'''''1'E'
+Components=METL=10;ACRL=1;LCAC=1;
+
+[Physical]
+Float=600
