@@ -3,6 +3,8 @@
 #strict 2
 
 local team, process, range, flag, bar, attacker, spawnpoints, trend, capt, pAttackers, lastowner, iconState, captureradiusmarker, noenemys, nofriends;
+local startflagforteam;
+local captureableby; // array of booleans (index: team index)
 
 public func GetAttacker()		{return attacker;}
 public func GetTeam()			{return team;}
@@ -57,6 +59,32 @@ public func Set(string szName, int iRange, int iSpeed, int iValue)
   RemoveEffect("IntFlagpole",this);
   AddEffect("IntFlagpole",this,10,iSpeed,this);
 }
+
+/* Frontlines */
+public func SetStartFlagForTeam(int teamnumber) { startflagforteam = teamnumber; }
+public func IsStartFlagForTeam(int teamnumber) { return startflagforteam == teamnumber; }
+
+// todo: colors
+public func InitCaptureableArray() { captureableby = CreateArray(GetTeamCount()); }
+
+public func IsCapturableBy(int teamnumber) {
+  if (captureableby == nil)
+    return true; // OCC
+  // Frontlines
+  if (teamnumber == startflagforteam)
+    return true;
+  return captureableby[teamnumber];
+}
+
+public func SetCapturableBy(int teamnumber, bool captureable) {
+  captureableby[teamnumber] = captureable;
+}
+
+// IsFullyCaptured already exists and returns whether the flag was captured least once
+public func IsFrontlinesFullyCapturedBy(int teamnumber) {
+  return teamnumber == team && process == 100;
+}
+
 
 /* Spawnpoint-Konfiguration */
 
@@ -283,6 +311,8 @@ protected func Timer()
   }
 }
 
+
+/*
 public func IsCaptureableBy(int iTeam) {
   // todo: performance: get neighbors once
   //    initialize probably doesn't work (right neighbors don't exist)
@@ -315,6 +345,7 @@ public func IsCaptureableBy(int iTeam) {
     return 0; // map is broken
   return false;
 }
+*/
 
 public func Capture(int iTeam, bool bSilent)
 {
@@ -417,6 +448,9 @@ public func DoProcess(int iTeam, int iAmount)
   if(old > process)
     trend = -1;
 
+  if((old == 100 && trend < 0))
+    GameCallEx("FlagFrontlinesStatusChange", this, team, false);
+
   if((old == 100 && trend < 0) || (old == 0 && trend > 0))
   {
     GameCallEx("FlagAttacked", this, team, pAttackers);
@@ -431,6 +465,7 @@ public func DoProcess(int iTeam, int iAmount)
   //Flagge ist fertig übernommen
   if((process >= 100) && (old < 100))
   {
+    GameCallEx("FlagFrontlinesStatusChange", this, team, true);
     Capture(iTeam);
   }
 
