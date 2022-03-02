@@ -1,0 +1,77 @@
+[FolderMap]
+MinResX=640
+MinResY=480
+ScenInfoArea=1366,160,394,760
+FullscreenBG=1
+HideTitle=1
+
+	[Scenario]
+	File=CMC_BridgeOnslaught.c4s
+	Area=160,160,590,88
+	OverlayImage=OverlayBridgeOnslaught.png
+
+	[Scenario]
+	File=CMC_BroadcastStation.c4s
+	Area=160,256,590,88
+	OverlayImage=OverlayBroadcastStation.png
+
+	[Scenario]
+	File=CMC_CoastalResort.c4s
+	Area=160,352,590,88
+	OverlayImage=OverlayCoastalResort.png
+
+	[Scenario]
+	File=CMC_Dust.c4s
+	Area=160,448,590,88
+	OverlayImage=OverlayDust.png
+
+	[Scenario]
+	File=CMC_EndlessOutpost.c4s
+	Area=160,544,590,88
+	OverlayImage=OverlayEndlessOutpost.png
+
+	[Scenario]
+	File=CMC_Firewood.c4s
+	Area=160,640,590,88
+	OverlayImage=OverlayFirewood.png
+
+	[Scenario]
+	File=CMC_FusionReactor.c4s
+	Area=160,736,590,88
+	OverlayImage=OverlayFusionReactor.png
+
+
+	[Scenario]
+	File=CMC_GroundZero.c4s
+	Area=760,160,590,88
+	OverlayImage=OverlayGroundZero.png
+
+	[Scenario]
+	File=CMC_MacrossFrontier.c4s
+	Area=760,256,590,88
+	OverlayImage=OverlayMacrossFrontier.png
+
+	[Scenario]
+	File=CMC_MagmaZone.c4s
+	Area=760,352,590,88
+	OverlayImage=OverlayMagmaZone.png
+
+	[Scenario]
+	File=CMC_OperationMetro.c4s
+	Area=760,448,590,88
+	OverlayImage=OverlayOperationMetro.png
+
+	[Scenario]
+	File=CMC_ResearchFacility.c4s
+	Area=760,544,590,88
+	OverlayImage=OverlayResearchFacility.png
+
+	[Scenario]
+	File=CMC_SiegeOfControl.c4s
+	Area=760,640,590,88
+	OverlayImage=OverlaySiegeOfControl.png
+
+	[Scenario]
+	File=CMC_Yuki.c4s
+	Area=760,736,590,88
+	OverlayImage=OverlayYuki.png

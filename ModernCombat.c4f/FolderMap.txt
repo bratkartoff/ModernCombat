@@ -1,0 +1,111 @@
+[FolderMap]
+MinResX=640
+MinResY=480
+ScenInfoArea=1366,160,394,760
+FullscreenBG=1
+HideTitle=1
+
+	[Scenario]
+	File=Classic.c4f
+	Area=362,107,186,36
+	OverlayImage=OverlayCategories.png
+	SingleClick=true
+
+	[Scenario]
+	File=Special.c4f
+	Area=563,107,186,36
+	OverlayImage=OverlayCategories.png
+	SingleClick=true
+
+	[Scenario]
+	File=Credits.c4f
+	Area=1573,107,187,36
+	OverlayImage=OverlayCategories.png
+	SingleClick=true
+
+
+	[Scenario]
+	File=CMC_AtlanticCrisis.c4s
+	Area=160,160,590,80
+	OverlayImage=OverlayAtlanticCrisis.png
+
+	[Scenario]
+	File=CMC_BabelTower.c4s
+	Area=160,245,590,80
+	OverlayImage=OverlayBabelTower.png
+
+	[Scenario]
+	File=CMC_BaseJumping.c4s
+	Area=160,330,590,80
+	OverlayImage=OverlayBaseJumping.png
+
+	[Scenario]
+	File=CMC_Base1337.c4s
+	Area=160,415,590,80
+	OverlayImage=OverlayBase1337.png
+
+	[Scenario]
+	File=CMC_BlackThunder.c4s
+	Area=160,500,590,80
+	OverlayImage=OverlayBlackThunder.png
+
+	[Scenario]
+	File=CMC_Breakthrough.c4s
+	Area=160,585,590,80
+	OverlayImage=OverlayBreakthrough.png
+
+	[Scenario]
+	File=CMC_ColdCash.c4s
+	Area=160,670,590,80
+	OverlayImage=OverlayColdCash.png
+
+	[Scenario]
+	File=CMC_InfinityIsland.c4s
+	Area=160,755,590,80
+	OverlayImage=OverlayInfinityIsland.png
+
+	[Scenario]
+	File=CMC_Interception.c4s
+	Area=160,840,590,80
+	OverlayImage=OverlayInterception.png
+
+
+	[Scenario]
+	File=CMC_IslandStrike.c4s
+	Area=760,160,590,80
+	OverlayImage=OverlayIslandStrike.png
+
+	[Scenario]
+	File=CMC_MankelOverpass.c4s
+	Area=760,245,590,80
+	OverlayImage=OverlayMankelOverpass.png
+
+	[Scenario]
+	File=CMC_MorayTowers.c4s
+	Area=760,330,590,80
+	OverlayImage=OverlayMorayTowers.png
+
+	[Scenario]
+	File=CMC_Oasis.c4s
+	Area=760,415,590,80
+	OverlayImage=OverlayOasis.png
+
+	[Scenario]
+	File=CMC_OperationCaveOffensive.c4s
+	Area=760,500,590,80
+	OverlayImage=OverlayOperationCaveOffensive.png
+
+	[Scenario]
+	File=CMC_PortArcford.c4s
+	Area=760,585,590,80
+	OverlayImage=OverlayPortArcford.png
+
+	[Scenario]
+	File=CMC_TwinPeaks.c4s
+	Area=760,670,590,80
+	OverlayImage=OverlayTwinPeaks.png
+
+	[Scenario]
+	File=CMC_Wavebreaker.c4s
+	Area=760,755,590,80
+	OverlayImage=OverlayWavebreaker.png

@@ -1,0 +1,18 @@
+CreatingInterior=Creating furniture...
+CreatingEquipment=Placing equipment...
+CreatingDecoration=Placing decoration...
+RepeatButton=Restart game
+RepeatButtonDesc=Restart the round.
+
+MsgCollapse=<c ff0000>Warning</c>: The local antenna tower <c ffff33>collapses</c>
+
+Team1=Aggressors
+Team2=Eurocorps
+
+Flag1=Gun Turret West
+Flag2=Helipad West
+Flag3=Alpha Base
+Flag4=Antenna Tower
+Flag5=Beta Base
+Flag6=Helipad East
+Flag7=Gun Turret East

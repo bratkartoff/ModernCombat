@@ -1,0 +1,15 @@
+CreatingInterior=Creating furniture...
+CreatingEquipment=Placing equipment...
+CreatingDecoration=Placing decoration...
+RepeatButton=Restart game
+RepeatButtonDesc=Restart the round.
+
+MsgFlagChanging=<c ff0000>Warning</c>: Flag post will <c ffff33>change positions</c> soon!
+MsgFlagChanged=Flag post moved to position <c ffff33>%s</c>!
+
+Team1=Eurocorps
+Team2=Aggressors
+
+Flag1=Observation Deck
+Flag2=Monument
+Flag3=Underground

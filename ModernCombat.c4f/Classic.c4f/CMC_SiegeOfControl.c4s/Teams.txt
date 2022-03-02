@@ -1,0 +1,4 @@
+[Teams]
+AutoGenerateTeams=1
+TeamDistribution=Host
+TeamColors=1

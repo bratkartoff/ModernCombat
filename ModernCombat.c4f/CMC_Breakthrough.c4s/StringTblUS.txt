@@ -1,0 +1,14 @@
+CreatingInterior=Creating furniture...
+CreatingEquipment=Placing equipment...
+CreatingDecoration=Placing decoration...
+RepeatButton=Restart game
+RepeatButtonDesc=Restart the round.
+
+Team1=Assault Troop
+Team2=Base Crew
+
+MsgCollapse=<c ff0000>Warning</c>: The local antenna tower <c ffff33>collapses</c>
+
+Flag1=West Base
+Flag2=Ruins
+Flag3=East Base

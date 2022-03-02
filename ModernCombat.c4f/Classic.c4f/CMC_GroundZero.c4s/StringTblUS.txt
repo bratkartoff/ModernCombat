@@ -1,0 +1,17 @@
+CreatingInterior=Creating furniture...
+CreatingEquipment=Placing equipment...
+CreatingDecoration=Placing decoration...
+RepeatButton=Restart game
+RepeatButtonDesc=Restart the round.
+
+Team1=Eurocorps
+Team2=Insurgents
+
+Flag1=West Warehouse
+Flag2=West Square
+Flag3=Parkway
+Flag4=East Square
+Flag5=East Warehouse
+
+Target1=Water Filter
+Target2=Central Server

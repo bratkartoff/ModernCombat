@@ -1,0 +1,20 @@
+CreatingInterior=Creating furniture...
+CreatingEquipment=Placing equipment...
+CreatingDecoration=Placing decoration...
+RepeatButton=Restart game
+RepeatButtonDesc=Restart the round.
+
+Team1=Spies
+Team2=Eurocorps
+
+Flag1=Cooling Tower A
+Flag2=Pump Station
+Flag3=Supply Center
+Flag4=Observation Deck
+Flag5=Distributor
+Flag6=Core Platform
+Flag7=Cooling Tower B
+
+Target1=Radar Unit
+Target2=Water Filter
+Target3=Data Server

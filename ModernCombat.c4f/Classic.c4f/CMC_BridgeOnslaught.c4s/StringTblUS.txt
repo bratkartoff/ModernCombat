@@ -1,0 +1,18 @@
+CreatingInterior=Creating furniture...
+CreatingEquipment=Placing equipment...
+CreatingDecoration=Placing decoration...
+RepeatButton=Restart game
+RepeatButtonDesc=Restart the round.
+
+Team1=Eurocorps
+Team2=Aggressors
+
+Flag1=West Entrance
+Flag2=West Depot
+Flag3=Guarding Office
+Flag4=East Depot
+Flag5=East Entrance
+
+Target1=Surveillance System
+Target2=Communication Server
+Target3=Gas Line

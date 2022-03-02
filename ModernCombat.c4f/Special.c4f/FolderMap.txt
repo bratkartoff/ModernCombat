@@ -1,0 +1,17 @@
+[FolderMap]
+MinResX=640
+MinResY=480
+ScenInfoArea=1366,160,394,760
+FullscreenBG=1
+HideTitle=1
+
+	[Scenario]
+	File=CMC_Skyfall.c4s
+	Area=160,160,590,88
+	OverlayImage=OverlaySkyfall.png
+
+
+	[Scenario]
+	File=CMC_Skyscrapers.c4s
+	Area=760,160,590,88
+	OverlayImage=OverlaySkyscrapers.png

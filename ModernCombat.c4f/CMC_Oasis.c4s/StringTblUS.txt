@@ -1,0 +1,14 @@
+CreatingInterior=Creating furniture...
+CreatingEquipment=Placing equipment...
+CreatingDecoration=Placing decoration...
+RepeatButton=Restart game
+RepeatButtonDesc=Restart the round.
+
+Team1=Eurocorps
+Team2=Aggressors
+
+Flag1=West Outpost
+Flag2=West Shore
+Flag3=Central Construction Site
+Flag4=East Shore
+Flag5=East Outpost

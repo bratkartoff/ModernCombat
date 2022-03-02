@@ -1,0 +1,14 @@
+CreatingInterior=Szenario wird eingerichtet...
+CreatingEquipment=Ausrüstung wird plaziert...
+CreatingDecoration=Dekoration wird plaziert...
+RepeatButton=Runde neustarten
+RepeatButtonDesc=Startet die Runde neu.
+
+Team1=Sturmtruppe
+Team2=Basisbesatzung
+
+MsgCollapse=<c ff0000>Achtung</c>: Der lokale Sendemast <c ffff33>stürzt ein</c>
+
+Flag1=West-Basis
+Flag2=Ruinen
+Flag3=Ost-Basis

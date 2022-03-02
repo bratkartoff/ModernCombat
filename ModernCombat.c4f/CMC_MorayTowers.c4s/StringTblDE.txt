@@ -1,0 +1,18 @@
+CreatingInterior=Szenario wird eingerichtet...
+CreatingEquipment=Ausrüstung wird plaziert...
+CreatingDecoration=Dekoration wird plaziert...
+RepeatButton=Runde neustarten
+RepeatButtonDesc=Startet die Runde neu.
+
+Team1=Eurocorps
+Team2=Aufständische
+
+Flag1=Innenbereich West
+Flag2=Westturm
+Flag3=Landeplattform
+Flag4=Ostturm
+Flag5=Innenbereich Ost
+
+Target1=Wasserfilter
+Target2=Verwaltungsserver
+Target3=Notstromaggregat

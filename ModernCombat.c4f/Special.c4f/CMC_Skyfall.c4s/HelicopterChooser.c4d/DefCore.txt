@@ -1,0 +1,12 @@
+[DefCore]
+id=HSPW
+Version=4,9,10,7
+Name=Helicopter Chooser
+Category=1
+Width=1
+Height=1
+Picture=0,0,64,64
+CollectionLimit=1
+ColorByOwner=1
+Timer=10
+TimerCall=Timer

@@ -1,0 +1,8 @@
+TimeTillRespawn=<c ff0000>%d Sekunden</c> bis zum Respawn
+SpawnMenu=Wähle einen <c ffff33>Einstiegspunkt</c>
+SpawnAt=bei Flaggenposten <c ffff33>%s</c>
+NewHelicopter=Neuer Helikopter
+NewHelicopterUnavailable=Keine neuen Helikopter verfügbar
+AlliedHelicopter=Verbündete Helikopter
+AlliedHelicopterUnavailable=Keine verbündeten Helikopter verfügbar
+PlayerSpawned=%s|ist eingestiegen

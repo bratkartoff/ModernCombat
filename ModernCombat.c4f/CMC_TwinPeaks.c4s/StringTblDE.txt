@@ -1,0 +1,18 @@
+CreatingInterior=Szenario wird eingerichtet...
+CreatingEquipment=Ausrüstung wird plaziert...
+CreatingDecoration=Dekoration wird plaziert...
+RepeatButton=Runde neustarten
+RepeatButtonDesc=Startet die Runde neu.
+
+MsgCollapse=<c ff0000>Achtung</c>: Der lokale Sendemast <c ffff33>stürzt ein</c>
+
+Team1=Aggressoren
+Team2=Eurocorps
+
+Flag1=Geschützturm West
+Flag2=Landeplatz West
+Flag3=Alphabasis
+Flag4=Sendemast
+Flag5=Betabasis
+Flag6=Landeplatz Süd
+Flag7=Geschützturm Süd

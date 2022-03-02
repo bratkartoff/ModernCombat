@@ -1,0 +1,20 @@
+CreatingInterior=Szenario wird eingerichtet...
+CreatingEquipment=Ausrüstung wird plaziert...
+CreatingDecoration=Dekoration wird plaziert...
+RepeatButton=Runde neustarten
+RepeatButtonDesc=Startet die Runde neu.
+
+Team1=Spione
+Team2=Eurocorps
+
+Flag1=Kühlturm A
+Flag2=Pumpstation
+Flag3=Nachschublager
+Flag4=Aussichtsdeck
+Flag5=Verteiler
+Flag6=Kernplattform
+Flag7=Kühlturm B
+
+Target1=Radaranlage
+Target2=Wasserfilter
+Target3=Datenserver

@@ -1,0 +1,8 @@
+TimeTillRespawn=<c ff0000>%d seconds</c> till respawn
+SpawnMenu=Choose a <c ffff33>access position</c>
+SpawnAt=on flag post <c ffff33>%s</c>
+NewHelicopter=New Helicopter
+NewHelicopterUnavailable=No new helicopters available
+AlliedHelicopter=Allied Helicopters
+AlliedHelicopterUnavailable=No allied helicopters available
+PlayerSpawned=%s|entered

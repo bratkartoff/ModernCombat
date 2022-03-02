@@ -1,0 +1,15 @@
+CreatingInterior=Creating furniture...
+CreatingEquipment=Placing equipment...
+CreatingDecoration=Placing decoration...
+RepeatButton=Restart game
+RepeatButtonDesc=Restart the round.
+
+Team1=Eurocorps
+Team2=Wipfinalists
+
+Flag1=West Warehouse
+Flag2=Drilling Platform
+Flag3=East Warehouse
+
+Target1=Communication Server
+Target2=Antenna

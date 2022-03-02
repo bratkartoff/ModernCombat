@@ -1,0 +1,17 @@
+CreatingInterior=Creating furniture...
+CreatingEquipment=Placing equipment...
+CreatingDecoration=Placing decoration...
+RepeatButton=Restart game
+RepeatButtonDesc=Restart the round.
+
+Team1=Eurocorps
+Team2=Aggressors
+
+Flag1=Line A
+Flag2=Line B
+Flag3=Line C
+Flag4=Line D
+Flag5=Line E
+
+Target1=Data Server
+Target2=Backup Server

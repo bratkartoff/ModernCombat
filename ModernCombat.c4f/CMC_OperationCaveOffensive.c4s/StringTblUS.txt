@@ -1,0 +1,25 @@
+CreatingInterior=Creating furniture...
+CreatingEquipment=Placing equipment...
+CreatingDecoration=Placing decoration...
+RepeatButton=Restart game
+RepeatButtonDesc=Restart the round.
+
+MsgFlagChanging=<c ff0000>Warning</c>: Flag post will <c ffff33>change positions</c> soon!
+MsgFlagChanged=Flag post moved to position <c ffff33>%s</c>!
+
+Team1=Eurocorps
+Team2=Aggressors
+
+Flag1=West Entrance
+Flag2=Research Division
+Flag3=Helicopter Bay
+Flag4=Supply Base
+Flag5=East Entrance
+Flag6=Upper Supply Bridge
+Flag7=Lower Supply Bridge
+
+Target1=Missile Fuel Pump
+Target2=Missile Connection Point
+Target3=Missile Radar
+Target4=Launch Code Server
+Target5=Missile Control Station

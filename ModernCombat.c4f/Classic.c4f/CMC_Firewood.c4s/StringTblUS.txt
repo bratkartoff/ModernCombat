@@ -1,0 +1,17 @@
+CreatingInterior=Creating furniture...
+CreatingEquipment=Placing equipment...
+CreatingDecoration=Placing decoration...
+RepeatButton=Restart game
+RepeatButtonDesc=Restart the round.
+
+Team1=Alpha
+Team2=Beta
+Team3=Gamma
+Team4=Delta
+
+Flag1=West Tower
+Flag2=West Tunnel
+Flag3=Plateau
+Flag4=Pier
+Flag5=East Tunnel
+Flag6=East Tower

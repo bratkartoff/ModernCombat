@@ -1,0 +1,28 @@
+CreatingInterior=Szenario wird eingerichtet...
+CreatingEquipment=Ausrüstung wird plaziert...
+CreatingDecoration=Dekoration wird plaziert...
+RepeatButton=Runde neustarten
+RepeatButtonDesc=Startet die Runde neu.
+
+MsgFlagChanging=<c ff0000>Achtung</c>: <c ffff33>Positionswechsel</c> des Flaggenpostens steht bevor!
+MsgFlagChanged=Der Flaggenposten ist nun an Position <c ffff33>%s</c>!
+
+Team1=Eurocorps
+Team2=Aggressoren
+
+Flag1=Quartiere
+Flag2=Kontrollturm
+Flag3=Fahrzeughalle
+Flag4=Lobby
+Flag5=Lagerhalle
+Flag6=Eingang
+Flag7=Treibstofflager
+
+Target1=Steuerungseinheit
+Target2=Datenserver
+Target3=Lüftungssystem
+Target4=Notstromaggregat
+Target5=Treibstofftank
+Target6=Anreicherungsanlage
+Target7=Notstromgenerator
+Target8=Generator

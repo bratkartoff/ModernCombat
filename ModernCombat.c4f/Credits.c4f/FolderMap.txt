@@ -1,0 +1,6 @@
+[FolderMap]
+MinResX=640
+MinResY=480
+ScenInfoArea=1575,316,300,100
+FullscreenBG=1
+HideTitle=1

@@ -1,0 +1,2 @@
+DE:Helikopterwähler
+US:Helicopter Chooser

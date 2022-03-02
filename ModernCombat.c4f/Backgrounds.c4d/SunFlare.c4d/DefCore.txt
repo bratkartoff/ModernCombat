@@ -1,0 +1,9 @@
+[DefCore]
+id=BD11
+Name=Sunflare
+Version=4,9,10,7
+Category=1
+Width=1200
+Height=444
+Picture=0,0,1,1
+Offset=-600,-222
