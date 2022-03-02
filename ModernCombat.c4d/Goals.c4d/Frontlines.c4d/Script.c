@@ -228,10 +228,10 @@ private func ConfigFinished()
 private func OpenGoalMenu(id dummy, int iSelection)
 {
   var pClonk = GetCursor(iChoosedPlr);
-  CreateMenu(GetID(),pClonk,nil,0,0,0,1);
+  CreateMenu(GetID(),pClonk,nil,0,"",0,1);
 
   //Ticketanzeige
-  AddMenuItem("$Tickets$", 0, SM03, pClonk, iStartTickets);
+  AddMenuItem("$Tickets$", "", SM03, pClonk, iStartTickets);
 
   //Ticketlimits ermitteln
   var uplimit = 100; var downlimit = 5;
@@ -265,7 +265,7 @@ private func OpenGoalMenu(id dummy, int iSelection)
 private func ChangeStartTickets(id dummy, int iChange)
 {
   //Sound
-  Sound("Grab",1,0,0,1);
+  Sound("Grab",1,nil,0,1);
 
   //Ticketstand verändern
   if(!GetLeague())
@@ -282,7 +282,7 @@ private func ChangeStartTickets(id dummy, int iChange)
 private func ChangeTicketBleed(id dummy, bool fChange)
 {
   //Sound
-  Sound("Grab",1,0,0,1);
+  Sound("Grab",1,nil,0,1);
 
   fTicketBleed = fChange;
   //Zeitlimit umschalten und Spielzielbeschreibung aktualisieren
@@ -385,9 +385,9 @@ private func UpdateScoreboard()
     }
     else
     {
-      SetScoreboardData(i, GOCC_FlagColumn, 0);
+      SetScoreboardData(i, GOCC_FlagColumn, "");
       if(fTicketBleed) SetScoreboardData(i, GOCC_TimerColumn, 0);
-      SetScoreboardData(i, GOCC_ProgressColumn, 0);
+      SetScoreboardData(i, GOCC_ProgressColumn, "");
     }
     i++;
   }
@@ -604,7 +604,7 @@ public func TicketChange(int iTeam, int iChange)
 public func GetTeamTimer(int iTeam)
 {
   if(!aTeamTimers)
-    return;
+    return 0;
 
   return (aTeamTimers[iTeam-1] / 100);
 }
@@ -628,7 +628,7 @@ public func GetHighestTeams()
 
 public func GetTickets(int iTeam)
 {
-  return aTicket[iTeam-1];
+  return aTicket[iTeam-1] || 0;
 }
 
 public func SetTickets(int iTeam, int iTickets)
@@ -672,7 +672,7 @@ local fFulfilled;
 
 public func IsFulfilled()
 {
-  if(FindObject(CHOS))	return;
+  if(FindObject(CHOS))	return false;
   if(fFulfilled)	return true;
 
   var iWinningTeam = GetWinningTeam();
@@ -684,7 +684,7 @@ public func IsFulfilled()
     for(var i = 0; i < GetTeamCount(); i++)
       if(GetTeamByIndex(i) != iWinningTeam) EliminateTeam(GetTeamByIndex(i));
 
-    if(LosersAlive(iWinningTeam)) return;
+    if(LosersAlive(iWinningTeam)) return false;
 
     //Spielende planen
     Schedule("GameOver()",150);
@@ -693,7 +693,7 @@ public func IsFulfilled()
     RewardEvaluation();
 
     //Nachricht über Gewinner
-    Message("@$TeamHasWon$",0 , GetTeamColor(iWinningTeam), GetTeamName(iWinningTeam));
+    Message("@$TeamHasWon$", nil, GetTeamColor(iWinningTeam), GetTeamName(iWinningTeam));
 
     //Sounds
     Sound("Cheer.ogg", true);
@@ -761,7 +761,7 @@ public func FxOccupationGameTimer(object pTarget, int iEffectNumber, int iEffect
     }
   }
 
-  return;
+  return false;
 }
 
 private func TeamAlive(int iTeam)

@@ -273,7 +273,7 @@ protected func Timer()
     {
       if(iconState != 0)
       {
-        bar->SetIcon(0, SM21, 0, 0, 32);
+        bar->SetIcon("", SM21, 0, 0, 32);
         bar->Update(0, true, true);
         iconState = 0;
       }
@@ -286,7 +286,7 @@ protected func Timer()
         if( (GetTeamConfig(TEAM_AutoGenerateTeams) && GetTeamPlayerCount(team) <= 1 && (plr = GetTeamMemberByIndex(team, 0)) > -1) || !GetTeamConfig(TEAM_TeamColors))
           clr = GetPlrColorDw(plr);
 
-        bar->SetIcon(0, SM23, 0, 0, 32);
+        bar->SetIcon("", SM23, 0, 0, 32);
         bar->SetBarColor(clr);
         bar->Update(process);
         iconState = 2;
@@ -360,9 +360,9 @@ public func UpdateFlag()
   if(!bar)
   {
     bar = CreateObject(SBAR, 0, 0, -1);
-    bar->Set(this, RGB(255, 255, 255), BAR_FlagBar, 100, 0, SM21, 0, 0, true, true);
+    bar->Set(this, RGB(255, 255, 255), BAR_FlagBar, 100, "", SM21, 0, 0, true, true);
     bar->ChangeDefOffset(GetDefOffset(GetID(), 1)+5);
-    bar->SetIcon(0, SM21, 0, 0, 32);
+    bar->SetIcon("", SM21, 0, 0, 32);
     bar->Update(0, true, true);
     iconState = 0;
   }
@@ -462,14 +462,14 @@ public func DoProcess(int iTeam, int iAmount)
   {
     if(iconState != 0)
     {
-      bar->SetIcon(0, SM21, 0, 0, 32);
+      bar->SetIcon("", SM21, 0, 0, 32);
       bar->Update(0, true, true);
       iconState = 0;
     }
   }
   else if(iconState != 1)
   {
-    bar->SetIcon(0, SM22, 0, 0, 32);
+    bar->SetIcon("", SM22, 0, 0, 32);
     iconState = 1;
   }
   if(iconState != 0)
