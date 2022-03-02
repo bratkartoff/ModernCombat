@@ -37,6 +37,7 @@ public func Initialize()
   if(!flag)
     flag = CreateObject(OFLG);
   //HUD-Anzeige erstmals einrichten
+  process = 0;
   UpdateFlag();
 }
 
@@ -63,10 +64,10 @@ public func Set(string szName, int iRange, int iSpeed, int iValue)
 /* Frontlines */
 public func SetStartFlagForTeam(int teamnumber)
 {
-	startflagforteam = teamnumber;
-	Capture(teamnumber, true);
+  startflagforteam = teamnumber;
+  Capture(teamnumber, true);
 }
-public func IsStartFlagForTeam(int teamnumber) { return startflagforteam == teamnumber; }
+public func GetStartFlagForTeam() { return startflagforteam; }
 
 // todo: colors
 public func InitCaptureableArray() { captureableby = CreateArray(GetTeamCount()); }

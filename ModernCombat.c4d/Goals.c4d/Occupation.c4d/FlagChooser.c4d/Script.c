@@ -28,6 +28,11 @@ global func CreateGOCCSpawner(object pCrew, int iChoosedClass)
   return spawner;
 }
 
+global func FindGOCC()
+{
+  return FindObject(GOCC) || FindObject(GFRN);
+}
+
 local spawn,flagpoles,selection,oldvisrange,oldvisstate;
 
 protected func Collection2(object pObject)
@@ -44,7 +49,7 @@ protected func Collection2(object pObject)
 
   if(!flagpoles)
   {
-    flagpoles = FindObject(GOCC)->GetSortedFlags();
+    flagpoles = FindGOCC()->GetSortedFlags();
     if(!flagpoles)
     {
       ErrorLog("Couldn't find any flags");
@@ -66,7 +71,7 @@ private func SelectBestFlag()
 global func GetFlagDistance(object pFlag)
 {
   var flags = [];
-  var gocc = FindObject2(Find_ID(GOCC));
+  var gocc = FindGOCC();
   if(gocc) flags = gocc->GetFlags();
   var i = 0;
   while(i < GetLength(flags)-1)
@@ -109,7 +114,8 @@ global func GetBestFlag(int iTeam)
   var dist;
   var flags = [];
 
-  var gocc = FindObject2(Find_ID(GOCC));
+  var gocc = FindGOCC();
+  // todo: frontlines?
   if(gocc) flags = gocc->GetFlags();
   for(var flag in flags)
   {

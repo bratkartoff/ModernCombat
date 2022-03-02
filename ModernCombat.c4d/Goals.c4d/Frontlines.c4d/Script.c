@@ -59,6 +59,18 @@ public func SetFlagGroups(flagGroups)
   for(var group in aFlagGroups)
     for(var flag in group)
       flag->InitCaptureableArray();
+
+  // "Capture" start flags
+  for(var group in aFlagGroups)
+  {
+    for(var flag in group)
+    {
+      var startteam = flag->GetStartFlagForTeam();
+      if(startteam != nil)
+        FlagFrontlinesStatusChange(flag, startteam, true);
+    }
+  }
+
 }
 
 // helper function for simple maps where all flags are in a line
@@ -490,7 +502,7 @@ private func FlagFrontlinesStatusChange(object flag, int teamnumber, bool captur
   var fullyCaptured = 2;
 
   var group = GetGroup(flag);
-  var nCaptured = CountFullyCapturedFlags(group);
+  var nCaptured = CountFullyCapturedFlags(group, teamnumber);
   var nFlags = GetLength(group);
 
   // determine old and new state - I'm not sure if all branches are
@@ -525,16 +537,14 @@ private func FlagFrontlinesStatusChange(object flag, int teamnumber, bool captur
     for (var neighbor in GetNeighbors(group))
       SetGroupCaptureableBy(neighbor, teamnumber, true);
   } else {
-    if (state == partiallyCaptured) {
+    if (state == partiallyCaptured)
       SetGroupCaptureableBy(group, teamnumber, true);
-    } else {
-      if (!AnyNeighborFullyCaptured(group))
-        SetGroupCaptureableBy(group, teamnumber, false);
-    }
+    else
+      SetGroupCaptureableBy(group, teamnumber, AnyNeighborFullyCaptured(group, teamnumber));
 
     if (oldState == fullyCaptured)
       for (var neighbor in GetNeighbors(group))
-        if (!AnyNeighborFullyCaptured(neighbor))
+        if (!AnyNeighborFullyCaptured(neighbor, teamnumber))
           SetGroupCaptureableBy(neighbor, teamnumber, false);
   }
 
@@ -565,9 +575,11 @@ private func IsFullyCaptured(array flagGroup, int teamnumber) {
 }
 
 private func AnyNeighborFullyCaptured(array flagGroup, int teamnumber) {
-  for (var flagGroup in GetNeighbors(flagGroup))
-    if (IsFullyCaptured(flagGroup, teamnumber))
+  for (var neighborGroup in GetNeighbors(flagGroup)) {
+    if (IsFullyCaptured(neighborGroup, teamnumber)) {
       return true;
+    }
+  }
   return false;
 }
 
@@ -580,11 +592,6 @@ private func GetNeighbors(array flagGroup) {
   if (index + 1 < GetLength(aFlagGroups))
     neighbors[] = aFlagGroups[index + 1];
   return neighbors;
-}
-
-
-private func IsGroupCaptureableBy(array flagGroup, int teamnumber) {
-  return flagGroup[0]->IsCaptureableBy(teamnumber);
 }
 
 private func SetGroupCaptureableBy(array flagGroup, int teamnumber, bool captureable) {
