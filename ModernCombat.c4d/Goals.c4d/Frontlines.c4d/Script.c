@@ -1,4 +1,4 @@
-/*-- Besitznahme --*/
+/*-- Frontlines (größtenteils Besitznahme) --*/
 
 #strict 2
 #include TEAM

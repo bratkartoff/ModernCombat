@@ -643,8 +643,9 @@ public func ChooserFinished()
   for(var i = 0; i < GetPlayerCount(); i++)
     aTeams[GetPlayerTeam(GetPlayerByIndex(i))] = true;
 
-  //OCC-Spielziel
-  if(FindObject(GOCC))
+  //OCC oder Frontlines
+  var frnGoalObj = FindObject(GFRN);
+  if(FindObject(GOCC) || frnGoalObj)
   {
     //Flaggenposten
     aFlag[0] = CreateObject(OFPL,1420,370,NO_OWNER);
@@ -654,7 +655,7 @@ public func ChooserFinished()
     if(aTeams[1] == true)
     {
       aFlag[0]->Set("$Flag1$",0,4);
-      aFlag[0]->Capture(1,1);
+      aFlag[0]->SetStartFlagForTeam(1);
     }
     else
     {
@@ -687,12 +688,16 @@ public func ChooserFinished()
     if(aTeams[2] == true)
     {
       aFlag[4]->Set("$Flag5$",0,4);
-      aFlag[4]->Capture(2,1);
+      aFlag[4]->SetStartFlagForTeam(2);
     }
     else
     {
       aFlag[4]->Set("$Flag5$");
     }
+
+    if(frnGoalObj)
+      frnGoalObj->SetFlagGroups(frnGoalObj->LinearScenario(aFlag));
+
 
     //Geschützstellungen
     CreateObject(GNET, 1600, 370, -1)->Set(0,90,1);

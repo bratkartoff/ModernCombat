@@ -61,13 +61,18 @@ public func Set(string szName, int iRange, int iSpeed, int iValue)
 }
 
 /* Frontlines */
-public func SetStartFlagForTeam(int teamnumber) { startflagforteam = teamnumber; }
+public func SetStartFlagForTeam(int teamnumber)
+{ 
+	startflagforteam = teamnumber;
+	Capture(teamnumber, true);
+}
 public func IsStartFlagForTeam(int teamnumber) { return startflagforteam == teamnumber; }
 
 // todo: colors
 public func InitCaptureableArray() { captureableby = CreateArray(GetTeamCount()); }
 
-public func IsCapturableBy(int teamnumber) {
+public func IsCapturableBy(int teamnumber)
+{
   if (captureableby == nil)
     return true; // OCC
   // Frontlines
@@ -76,12 +81,14 @@ public func IsCapturableBy(int teamnumber) {
   return captureableby[teamnumber];
 }
 
-public func SetCapturableBy(int teamnumber, bool captureable) {
+public func SetCapturableBy(int teamnumber, bool captureable)
+{
   captureableby[teamnumber] = captureable;
 }
 
 // IsFullyCaptured already exists and returns whether the flag was captured least once
-public func IsFrontlinesFullyCapturedBy(int teamnumber) {
+public func IsFrontlinesFullyCapturedBy(int teamnumber)
+{
   return teamnumber == team && process == 100;
 }
 
