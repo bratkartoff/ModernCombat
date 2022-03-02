@@ -1,6 +1,6 @@
 /*-- Flaggenposten --*/
 
-#strict 2
+#strict 3
 
 local team, process, range, flag, bar, attacker, spawnpoints, trend, capt, pAttackers, lastowner, iconState, captureradiusmarker, noenemys, nofriends;
 local startflagforteam;
@@ -62,7 +62,7 @@ public func Set(string szName, int iRange, int iSpeed, int iValue)
 
 /* Frontlines */
 public func SetStartFlagForTeam(int teamnumber)
-{ 
+{
 	startflagforteam = teamnumber;
 	Capture(teamnumber, true);
 }
@@ -71,7 +71,7 @@ public func IsStartFlagForTeam(int teamnumber) { return startflagforteam == team
 // todo: colors
 public func InitCaptureableArray() { captureableby = CreateArray(GetTeamCount()); }
 
-public func IsCapturableBy(int teamnumber)
+public func IsCaptureableBy(int teamnumber)
 {
   if (captureableby == nil)
     return true; // OCC
@@ -81,7 +81,7 @@ public func IsCapturableBy(int teamnumber)
   return captureableby[teamnumber];
 }
 
-public func SetCapturableBy(int teamnumber, bool captureable)
+public func SetCaptureableBy(int teamnumber, bool captureable)
 {
   captureableby[teamnumber] = captureable;
 }
@@ -318,41 +318,6 @@ protected func Timer()
   }
 }
 
-
-/*
-public func IsCaptureableBy(int iTeam) {
-  // todo: performance: get neighbors once
-  //    initialize probably doesn't work (right neighbors don't exist)
-  //        todo: test
-  // todo: groups
-  // groups:
-  //    explicit or automatic grouping?
-  //    data structure: array of array of flags
-
-  // aFlag is a global array that is set in the scenario script
-  var index = GetIndexOf(this, aFlag);
-  var neighbors = [];
-  if (index > 0)
-    neighbors[] = aFlag[index - 1];
-  if (index + 1 < GetLength(aFlag))
-    neighbors[] = aFlag[index + 1];
-  for (var flag in neighbors) {
-    if (flag->GetTeam() == iTeam && flag->GetProcess() == 100)
-      return true;
-  }
-  var n = GetLength(neighbors);
-  // always allow (re)capturing the start flags without a neighboring flag
-  // process != 100 prevents the enemy team from capturing it
-  // if they don't have a neighboring flag
-  // and complete capture by the enemy team is a win anyway
-  if (n == 1) {
-    return process != 100;
-  }
-  if (n == 0)
-    return 0; // map is broken
-  return false;
-}
-*/
 
 public func Capture(int iTeam, bool bSilent)
 {

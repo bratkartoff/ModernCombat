@@ -1,6 +1,6 @@
-/*-- Frontlines (größtenteils Besitznahme) --*/
+/*-- Frontlines (größtenteils Besitznahme --*/
 
-#strict 2
+#strict 3
 #include TEAM
 
 local iStartTickets;
@@ -58,7 +58,7 @@ public func SetFlagGroups(flagGroups)
   aFlagGroups = flagGroups;
   for(var group in aFlagGroups)
     for(var flag in group)
-      flag->InitCaptureableBy();
+      flag->InitCaptureableArray();
 }
 
 // helper function for simple maps where all flags are in a line
@@ -66,7 +66,7 @@ public func SetFlagGroups(flagGroups)
 public func LinearScenario(flags)
 {
   var flagGroups = [];
-  for(var flag in flags):
+  for(var flag in flags)
     flagGroups[] = [flag];
   return flagGroups;
 }
@@ -228,7 +228,7 @@ private func ConfigFinished()
 private func OpenGoalMenu(id dummy, int iSelection)
 {
   var pClonk = GetCursor(iChoosedPlr);
-  CreateMenu(GetID(),pClonk,0,0,0,0,1);
+  CreateMenu(GetID(),pClonk,nil,0,0,0,1);
 
   //Ticketanzeige
   AddMenuItem("$Tickets$", 0, SM03, pClonk, iStartTickets);
@@ -280,6 +280,7 @@ private func ChangeStartTickets(id dummy, int iChange)
 }
 
 private func ChangeTicketBleed(id dummy, bool fChange)
+{
   //Sound
   Sound("Grab",1,0,0,1);
 
@@ -481,12 +482,13 @@ public func FlagCaptured(object pFlag, int iTeam, array pAttackers, bool fRegain
   UpdateScoreboard();
 }
 
-// group states
-local const notCaptured = 0;
-local const partiallyCaptured = 1;
-local const fullyCaptured = 2;
 
 private func FlagFrontlinesStatusChange(object flag, int teamnumber, bool captured) {
+  // group states
+  var notCaptured = 0;
+  var partiallyCaptured = 1;
+  var fullyCaptured = 2;
+
   var group = GetGroup(flag);
   var nCaptured = CountFullyCapturedFlags(group);
   var nFlags = GetLength(group);
@@ -497,10 +499,16 @@ private func FlagFrontlinesStatusChange(object flag, int teamnumber, bool captur
   var state = notCaptured;
   if (nCaptured == 0) {
     state = notCaptured;
-    oldState = nFlags == 1 ? fullyCaptured : partiallyCaptured;
+    if (nFlags == 1)
+      oldState = fullyCaptured;
+    else
+      oldState = partiallyCaptured;
   } else if (nCaptured == nFlags) {
     state = fullyCaptured;
-    oldState = nFlags == 1 ? notCaptured : partiallyCaptured;
+    if (nFlags == 1)
+      oldState = notCaptured;
+    else
+      oldState = partiallyCaptured;
   } else {
     state = partiallyCaptured;
     if (captured && nCaptured == 1)
@@ -512,52 +520,53 @@ private func FlagFrontlinesStatusChange(object flag, int teamnumber, bool captur
   }
 
   // state != oldState at this point
-  
+
   if (state == fullyCaptured) {
     for (var neighbor in GetNeighbors(group))
       SetGroupCaptureableBy(neighbor, teamnumber, true);
   } else {
     if (state == partiallyCaptured) {
-      SetGroupCapturableBy(group, teamnumber, true);
+      SetGroupCaptureableBy(group, teamnumber, true);
     } else {
       if (!AnyNeighborFullyCaptured(group))
-        SetGroupCapturableBy(group, teamnumber, false);
+        SetGroupCaptureableBy(group, teamnumber, false);
     }
 
     if (oldState == fullyCaptured)
-      for (var neighbor in neighbors)
+      for (var neighbor in GetNeighbors(group))
         if (!AnyNeighborFullyCaptured(neighbor))
-          SetGroupCapturableBy(neighbor, teamnumber, false);
+          SetGroupCaptureableBy(neighbor, teamnumber, false);
   }
 
 }
 
-private func GetGroup(object flag) {
+private func GetGroup(object flag)
+{
   // todo: use map for performance?
   for(var flagGroup in aFlagGroups) {
     if (ArrayContains(flagGroup, flag))
-      return flagGroup
+      return flagGroup;
   }
-  Log("misconfiguration: flag %v was not assigned to a flag group", flag)
+  Log("misconfiguration: flag %v was not assigned to a flag group", flag);
 }
 
 private func CountFullyCapturedFlags(array flagGroup, int teamnumber) {
   var n = 0;
   for(var flag in flagGroup)
-    n += flag->IsFullyCapturedBy(teamnumber)
+    n += flag->IsFrontlinesFullyCapturedBy(teamnumber);
   return n;
 }
 
 private func IsFullyCaptured(array flagGroup, int teamnumber) {
   for (var flag in flagGroup)
-    if (!flag->IsFullyCapturedBy(teamnumber)
+    if (!flag->IsFrontlinesFullyCapturedBy(teamnumber))
       return false;
   return true;
 }
 
 private func AnyNeighborFullyCaptured(array flagGroup, int teamnumber) {
   for (var flagGroup in GetNeighbors(flagGroup))
-    if (IsFullyCaptured(flagGroup, teamnumber)
+    if (IsFullyCaptured(flagGroup, teamnumber))
       return true;
   return false;
 }

@@ -1,9 +1,10 @@
 name := "ExperimentalDoNotSave.c4d"
+start:
+	clonk "ModernCombat.c4f/Classic.c4f/CMC_OperationMetro.c4s"
+
 copy: pack
 	cp {{name}} /opt/LegacyClonk
 
-start: copy
-	clonk "ModernCombat.c4f/Classic.c4f/CMC_OperationMetro.c4s" "/lobby:1"
 
 push: pack
 	scp {{name}} $wyip:/opt/LegacyClonk
