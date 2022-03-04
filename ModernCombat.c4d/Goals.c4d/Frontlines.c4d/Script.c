@@ -7,30 +7,24 @@ local iStartTickets;
 local iWarningTickets;
 local aTicket;
 local aTeamTimers;
-local fTicketBleed;
 local aFlagGroups; // array of groups (group: array of flags)
+local aFlags; // same information, for performance. Only used for reading
 
 static const GOCC_Horizontal		= 1;
 static const GOCC_Vertical		= 2;
 
-private func StartTickets()		{return 30;}		//Standardticketzahl
+private func StartTickets()		{return 25;}		//Standardticketzahl
+private func TicketsPerFlag()		{return 5;}
 public func IsConfigurable()		{return true;}
 public func GoalExtraValue()					//Spielzielinformationen an Scoreboard weitergeben
 {
-  if(fTicketBleed)
-    return Format("%d, {{SM27}}", iStartTickets);
-  else
-    return iStartTickets;
+  return iStartTickets;
 }
 public func CustomSpawnSystem()		{return true;}
 public func RejectChoosedClassInfo()	{return true;}
-global func GetOccupationTimerSpeed()	{return 30;}		//Standard-Timer-Geschwindigkeit
 public func GoalDescription()
 {
-  if(fTicketBleed)
-    return "$GoalDesc$";
-  else
-    return "$GoalDesc2$";
+  return "$GoalDesc2$";
 }
 
 
@@ -41,7 +35,6 @@ protected func Initialize()
   aTicket = [];
   //Ticketzahl vorgeben
   iStartTickets = StartTickets();
-  fTicketBleed = true;
 
   return _inherited();
 }
@@ -55,21 +48,29 @@ public func Activate(iPlr)
 // must be called by the scenario script once all flags have been created
 public func SetFlagGroups(flagGroups)
 {
+  aFlags = [];
   aFlagGroups = flagGroups;
   for(var group in aFlagGroups)
+  {
     for(var flag in group)
+    {
       flag->InitCaptureableArray();
+      // set aFlags (flattened flagGroups
+      aFlags[] = flag;
+    }
+  }
 
   // "Capture" start flags
   for(var group in aFlagGroups)
   {
     for(var flag in group)
     {
-      var startteam = flag->GetStartFlagForTeam();
+      var startteam = flag->GetFrontlinesTeam();
       if(startteam != nil)
         FlagFrontlinesStatusChange(flag, startteam, true);
     }
   }
+
 
 }
 
@@ -103,9 +104,6 @@ public func ChooserFinished()
   //Tickets verteilen
   for(var i = 0; i < GetTeamCount(); i++)
     DoTickets(GetTeamByIndex(i), iStartTickets);
-
-  if(fTicketBleed)
-    Schedule("AddEffect(\"OccupationGame\", this, 100, 1, this, GOCC);", 1, 0, this);
 }
 
 public func CreateSpawners()
@@ -125,78 +123,19 @@ public func GetDirection()
   return GOCC_Horizontal;
 }
 
+// only exists because of the flag chooser
+// removed the automatic sorting by position via FindObjects because
+// it could change the order if the flags move (unlikely, but possible)
+// and because the flags are sorted anyway because the information is extracted from aFlagGroups
+// todo: remove this and use an array in OCC as well?
 public func GetSortedFlags()
 {
-  if(GetDirection() == GOCC_Horizontal)
-    return FindObjects(Find_Func("IsFlagpole"), Sort_Func("Sort_XPosition"));
-  else
-    return FindObjects(Find_Func("IsFlagpole"), Sort_Func("Sort_YPosition"));
+  return GetFlags();
 }
 
-global func GetFlags()
+public func GetFlags()
 {
-  return FindObjects(Find_Func("IsFlagpole"));
-}
-
-global func CreateFlagpole(int iX, int iY, string szName, int iRange, int iSpeed)
-{
-  var point = CreateObject(OFPL, iX, iY, NO_OWNER);
-  point->Set(szName, iRange, iSpeed);
-  return point;
-}
-
-global func GetTeamFlags(int iTeam)
-{
-  var result = [];
-
-  for(flag in GetFlags())
-    if(flag->GetTeam() == iTeam)
-      result[GetLength(result)] = flag;
-
-  return result;
-}
-
-global func GetFlagCount(int iTeam, bool bCountBlankFlags, bool bCountOnlyFullyCaptured)
-{
-  var count = 0;
-  for(var flag in FindObjects(Find_Func("IsFlagpole")))
-  {
-    if(iTeam)
-    {
-      if(bCountBlankFlags)
-      {
-        if(flag->GetTeam() || !flag->~IsFullyCaptured())
-          if(flag->GetTeam() != iTeam)
-            continue;
-      }
-      else
-      {
-        if(flag->GetTeam() != iTeam)
-          continue;
-
-        if(bCountOnlyFullyCaptured && !flag->~IsFullyCaptured())
-          continue;
-      }
-    }
-    count++;
-  }
-  return count;
-}
-
-global func GetEnemyFlagCount(int iTeam)
-{
-  var count = 0;
-
-  if(!iTeam)
-    return 0;
-
-  for(var flag in FindObjects(Find_Func("IsFlagpole")))
-  {
-    if(HostileTeam(iTeam, flag->GetTeam()) && flag->~IsFullyCaptured())
-      count++;
-  }
-
-  return count;
+  return aFlags;
 }
 
 /* HUD */
@@ -262,12 +201,6 @@ private func OpenGoalMenu(id dummy, int iSelection)
     AddMenuItem("$LessTickets$", "ChangeStartTickets", GetID(), pClonk, 0, -5, "$LessTickets$",2,2); else
     AddMenuItem("<c 777777>$LessTickets$</c>", "ChangeStartTickets", GetID(), pClonk, 0, -5, "$LessTickets$",2,2);
 
-  //Ticketabzug umschalten
-  if(fTicketBleed)
-    AddMenuItem("$TicketBleed$", "ChangeTicketBleed", SM27, pClonk, 0, false, "$TicketBleedDesc$");
-  else
-    AddMenuItem("<c 777777>$TicketBleed$</c>", "ChangeTicketBleed", SM06, pClonk, 0, true, "$TicketBleedDesc$");
-
   //Fertig
   AddMenuItem("$Finished$", "ConfigFinished", GetID(), pClonk,0,0,"$Finished$",2,3);
 
@@ -291,20 +224,6 @@ private func ChangeStartTickets(id dummy, int iChange)
   OpenGoalMenu(0, iSel);
 }
 
-private func ChangeTicketBleed(id dummy, bool fChange)
-{
-  //Sound
-  Sound("Grab",1,nil,0,1);
-
-  fTicketBleed = fChange;
-  //Zeitlimit umschalten und Spielzielbeschreibung aktualisieren
-  var chos = FindObject(CHOS);
-  if(chos) chos->SetGoalDesc(GetID(this), GoalDescription());
-  //Menü erneut öffnen
-  OpenGoalMenu(0, 3);
-}
-
-
 /* Scoreboard */
 
 static const GOCC_FlagColumn		= 1;
@@ -323,7 +242,6 @@ protected func InitScoreboard()
 
   //Spaltentitel
   SetScoreboardData(SBRD_Caption, GOCC_FlagColumn, "{{IC12}}", SBRD_Caption);
-  if(fTicketBleed) SetScoreboardData(SBRD_Caption, GOCC_TimerColumn, " ", SBRD_Caption);
   SetScoreboardData(SBRD_Caption, GOCC_ProgressColumn, "{{SM02}}", SBRD_Caption);
 
   UpdateScoreboard();
@@ -367,7 +285,6 @@ private func UpdateScoreboard()
       data = GetY(flag);
 
     SetScoreboardData(i, GOCC_FlagColumn, Format("<c %x>%s</c>", nameclr, GetName(flag)), data);
-    if(fTicketBleed) SetScoreboardData(i, GOCC_TimerColumn, Format(" "));
     SetScoreboardData(i, GOCC_ProgressColumn, Format("<c %x>%d%</c>", percentclr, flag->GetProcess()));
     i++;
   }
@@ -376,11 +293,9 @@ private func UpdateScoreboard()
   if(i != 1)
   {
     SetScoreboardData(i, GOCC_FlagColumn, " ", base+1);
-    if(fTicketBleed) SetScoreboardData(i, GOCC_TimerColumn, " ");
     SetScoreboardData(i, GOCC_ProgressColumn, " ");
     i++;
     SetScoreboardData(i, GOCC_FlagColumn, "{{SM26}}", base+2);
-    if(fTicketBleed) SetScoreboardData(i, GOCC_TimerColumn, "{{SM27}}");
     SetScoreboardData(i, GOCC_ProgressColumn, "{{SM03}}");
     i++;
   }
@@ -392,13 +307,11 @@ private func UpdateScoreboard()
     if(TeamAlive(iTeam))
     {
       SetScoreboardData(i, GOCC_FlagColumn, Format("<c %x>%s</c>", GetTeamColor(iTeam), GetTeamName(iTeam)), base+3+iStartTickets-GetTickets(iTeam));
-      if(fTicketBleed) SetScoreboardData(i, GOCC_TimerColumn, Format("<c 777777>%d</c>", GetTeamTimer(iTeam)));
       SetScoreboardData(i, GOCC_ProgressColumn, Format("<c ffbb00>%d</c>", GetTickets(iTeam)));
     }
     else
     {
       SetScoreboardData(i, GOCC_FlagColumn, "");
-      if(fTicketBleed) SetScoreboardData(i, GOCC_TimerColumn, 0);
       SetScoreboardData(i, GOCC_ProgressColumn, "");
     }
     i++;
@@ -414,7 +327,7 @@ public func FlagAttacked(object pFlag, int iTeam)
   UpdateScoreboard();
 }
 
-public func FlagLost(object pFlag, int iTeam, int iTeamAttacker, array pAttackers)
+public func FlagLost(object pFlag, int iTeam, int iTeamAttacker, array pAttackers, bool gavetickets)
 {
   //Punkte bei Belohnungssystem
   var i = 0;
@@ -447,10 +360,12 @@ public func FlagLost(object pFlag, int iTeam, int iTeamAttacker, array pAttacker
       }
     }
   }
-  UpdateScoreboard();
+  // subtract tickets
+  if(gavetickets)
+    DoTickets(iTeam, -TicketsPerFlag());
 }
 
-public func FlagCaptured(object pFlag, int iTeam, array pAttackers, bool fRegained)
+public func FlagCaptured(object pFlag, int iTeam, array pAttackers, bool fRegained, bool gavetickets)
 {
   //Punkte bei Belohnungssystem
   if(fRegained)
@@ -488,7 +403,13 @@ public func FlagCaptured(object pFlag, int iTeam, array pAttackers, bool fRegain
       }
       i++;
     }
+
   }
+
+  // add tickets
+  if(!gavetickets)
+    DoTickets(iTeam, TicketsPerFlag());
+
   //Eventnachricht: Flaggenposten erobert
   EventInfo4K(0, Format("$MsgFlagCaptured$", GetTeamColor(iTeam), GetTeamName(iTeam), GetName(pFlag)), IC10, 0, GetTeamColor(iTeam), 0, "Info_Objective.ogg");
   UpdateScoreboard();
@@ -533,6 +454,7 @@ private func FlagFrontlinesStatusChange(object flag, int teamnumber, bool captur
 
   // state != oldState at this point
 
+  // update capturabeby arrays of the flags in the group and the neighboring flags
   if (state == fullyCaptured) {
     for (var neighbor in GetNeighbors(group))
       SetGroupCaptureableBy(neighbor, teamnumber, true);
@@ -547,7 +469,6 @@ private func FlagFrontlinesStatusChange(object flag, int teamnumber, bool captur
         if (!AnyNeighborFullyCaptured(neighbor, teamnumber))
           SetGroupCaptureableBy(neighbor, teamnumber, false);
   }
-
 }
 
 private func GetGroup(object flag)
@@ -601,36 +522,12 @@ private func SetGroupCaptureableBy(array flagGroup, int teamnumber, bool capture
 
 
 /* Tickets */
-
-public func TicketChange(int iTeam, int iChange)
-{
-  DoTickets(iChange);
-  UpdateScoreboard(iTeam);
-}
-
 public func GetTeamTimer(int iTeam)
 {
   if(!aTeamTimers)
     return 0;
 
   return (aTeamTimers[iTeam-1] / 100);
-}
-
-public func GetHighestTeams()
-{
-  var result = [];
-  var flagcounts = [];
-
-  for(var i = 0; i < GetTeamCount(); i++)
-    flagcounts[i] = GetFlagCount(i+1, false, true);
-
-  var highest = GetMaxArrayVal(flagcounts, false, true);
-
-  for(var i = 0; i < GetLength(flagcounts); i++)
-    if(flagcounts[i] == highest)
-      result[GetLength(result)] = i + 1;
-
-  return result;
 }
 
 public func GetTickets(int iTeam)
@@ -641,7 +538,7 @@ public func GetTickets(int iTeam)
 public func SetTickets(int iTeam, int iTickets)
 {
   aTicket[iTeam-1] = Max(iTickets, 0);
-  UpdateScoreboard(iTeam);
+  UpdateScoreboard();
   return true;
 }
 
@@ -685,12 +582,13 @@ public func IsFulfilled()
   var iWinningTeam = GetWinningTeam();
 
   //Existiert nurnoch ein Team, gewinnt es
-  if(iWinningTeam > 0 || !GetFlags())
+  if(iWinningTeam != nil || !GetFlags())
   {
     //Teameliminierung
     for(var i = 0; i < GetTeamCount(); i++)
       if(GetTeamByIndex(i) != iWinningTeam) EliminateTeam(GetTeamByIndex(i));
 
+    // ???
     if(LosersAlive(iWinningTeam)) return false;
 
     //Spielende planen
@@ -707,142 +605,54 @@ public func IsFulfilled()
 
     return fFulfilled = true;
   }
-
-  //Unentschieden
-  if(iWinningTeam == -1)
-  {
-    for(var i = 0; i < GetTeamCount(); i++)
-      EliminateTeam(GetTeamByIndex(i));
-    if(LosersAlive(0))
-      return false;
-
-    //Spielende planen
-    Schedule("GameOver()",150);
-
-    //Auswertung
-    RewardEvaluation();
-
-    return fFulfilled = true;
-  }
 }
 
-public func FxOccupationGameStart(object pTarget, int iEffectNumber)
+private func TeamAlive(int teamnumber)
 {
-  aTeamTimers = [];
-
-  for(var i = 0; i < GetTeamCount(); i++)
-    aTeamTimers[i] = 10000;
-
-  return 1;
+  // game hasn't started yet
+  if(FindObject(CHOS))
+    return true;
+  return (GetTeamPlayerCount(teamnumber) || 0) > 0 && aTicket[teamnumber-1] > 0;
 }
 
-public func FxOccupationGameTimer(object pTarget, int iEffectNumber, int iEffectTime)
+private func GetTeamWithAllFlags()
 {
-  if(!GetFlags())
-    return -1;
+  var flags = GetFlags();
+  var first = flags[0]->GetFrontlinesTeam();
+  for(var flag in flags)
+    if(flag->GetFrontlinesTeam() != first)
+      return nil;
+  return first;
+}
 
-  var fcounts = [];
-
-  for(var i = 0; i < GetTeamCount(); i++)
-    fcounts[i] = GetFlagCount(i+1, false, true);
-
-  var maxfcount = GetMaxArrayVal(fcounts, false, true);
-
+private func GetOnlyTeamAlive()
+{
+  var winningTeam = nil;
   for(var i = 0; i < GetTeamCount(); i++)
   {
-    if(fcounts[i] < maxfcount)
+    var team = GetTeamByIndex(i);
+    if(TeamAlive(team))
     {
-      var decrease = fcounts[i] - GetEnemyFlagCount(i+1);
-      if(decrease < 0)
-      {
-        decrease *= GetOccupationTimerSpeed();
-        decrease = decrease / GetLength(GetFlags());
-        aTeamTimers[i] += decrease;
-        if(aTeamTimers[i] <= 0)
-        {
-          aTicket[i] -= 1;
-          aTeamTimers[i] = 10000;
-          UpdateScoreboard();
-        }
-      }
+      if(winningTeam == nil)
+        winningTeam = team;
+      else // there are at least 2 teams still alive
+        return nil;
     }
   }
-
-  return false;
-}
-
-private func TeamAlive(int iTeam)
-{
-  var alive = [], poles = [];
-  var i = iTeam;
-  
-  //Regelwähler vorhanden: Teamanzahl zurückgeben
-  if(FindObject(CHOS))
-  {
-    return GetTeamPlayerCount(iTeam);
-  }
-  //Ticketzahl 0: Team eliminieren
-  if(aTicket[i-1] <= 0)
-  {
-    EliminateTeam(i);
-    return false;
-  }
-
-  //Zwei Siegbedingungen: Alle Spieler eines Teams eliminiert und alle Flaggen des Teams eingenommen
-  poles[i] = 0;
-  for(var pole in FindObjects(Find_ID(OFPL)))
-    if(pole->GetTeam() == i && pole->IsFullyCaptured())
-      poles[i]++;
-  //Keine Flaggen?
-  if(poles[i] == 0)
-  {
-    alive[i] = 0;
-    for(var clonk in FindObjects(Find_OCF(OCF_Alive), Find_OCF(OCF_CrewMember)))
-      if(GetPlayerTeam(GetOwner(clonk)) == i)
-      {
-        if(Contained(clonk))
-        {
-          if(IsFakeDeath(clonk) || (GetID(Contained(clonk)) == OSPW && GetAction(Contained(clonk)) != "Counter") || GetID(Contained(clonk)) == TIM1 || GetID(Contained(clonk)) == TIM2)
-            continue;
-          alive[i]++;
-          break;
-        }
-        alive[i]++;
-      }
-  }
-  else
-    //Keine Spieler in einem Team?
-    for(var j = 0; j < GetPlayerCount(); j++)
-      if(GetPlayerTeam(GetPlayerByIndex(j)) == i)
-        alive[i]++;
-  if(alive[i] > 0) return true;
-  return false;
+  return winningTeam;
 }
 
 private func GetWinningTeam()
 {
-  var alive = [];
+  // win condition 1: a team has all flags
+  var winningTeam = GetTeamWithAllFlags();
+  if(winningTeam != nil)
+    return winningTeam;
 
-  //Zwei Siegbedingungen: Alle Spieler eines Teams eliminiert und alle Flaggen des Teams eingenommen
-  for(var i = 0; i < GetTeamCount(); i++)
-  {
-    alive[GetTeamByIndex(i)] = TeamAlive(GetTeamByIndex(i));
-  }
-
-  //Wie viele Teams existent?
-  var teamA = 0;
-  for(var i = 0; i < GetLength(alive); i++)
-    if(alive[i])
-    {
-      if(teamA) //Zwei oder mehr Teams lebendig?
-        return 0;
-      else
-        teamA = i; //Ein lebendiges Team gefunden?
-    }
-  if(teamA < 1) //Falls keine Teams lebendig (wieso auch immer)
-    return 0;
-  else
-    return teamA; //Ansonsten das einzig lebendige Team
+  // win condition 2: only one team left
+  winningTeam = GetOnlyTeamAlive();
+  if(winningTeam != nil)
+    return winningTeam;
 }
 
 private func EliminateTeam(int iTeam)
@@ -938,7 +748,8 @@ protected func RelaunchPlayer(int iPlr, object pCrew, int iMurdererPlr, int iTea
   //Kopfgeld
   Money(iPlr, pCrew, iMurdererPlr);
 
-  if(GetWinningTeam() > 0 && GetWinningTeam() != iTeam)
+  var winningTeam = GetWinningTeam();
+  if(winningTeam != nil && winningTeam != iTeam)
   {
     if(GetCursor(iPlr)) SetPlrViewRange(0, GetCursor(iPlr));
     return;

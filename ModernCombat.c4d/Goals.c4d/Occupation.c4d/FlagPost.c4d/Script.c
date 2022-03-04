@@ -5,6 +5,7 @@
 local team, process, range, flag, bar, attacker, spawnpoints, trend, capt, pAttackers, lastowner, iconState, captureradiusmarker, noenemys, nofriends;
 local startflagforteam;
 local captureableby; // array of booleans (index: team index)
+local gavetickets; // bool: whether 5 tickets were given to any team
 
 public func GetAttacker()		{return attacker;}
 public func GetTeam()			{return team;}
@@ -38,6 +39,7 @@ public func Initialize()
     flag = CreateObject(OFLG);
   //HUD-Anzeige erstmals einrichten
   process = 0;
+  gavetickets = false;
   UpdateFlag();
 }
 
@@ -62,23 +64,26 @@ public func Set(string szName, int iRange, int iSpeed, int iValue)
 }
 
 /* Frontlines */
+private func IsFrontlines() { return captureableby != nil; }
+
 public func SetStartFlagForTeam(int teamnumber)
 {
   startflagforteam = teamnumber;
   Capture(teamnumber, true);
 }
-public func GetStartFlagForTeam() { return startflagforteam; }
 
 // todo: colors
 public func InitCaptureableArray() { captureableby = CreateArray(GetTeamCount()); }
 
 public func IsCaptureableBy(int teamnumber)
 {
-  if (captureableby == nil)
-    return true; // OCC
-  // Frontlines
+  // OCC
+  if (!IsFrontlines())
+    return true;
+  // start flags are always recapturable
   if (teamnumber == startflagforteam)
     return true;
+  // set by Frontlines goal object via SetCaptureableBy
   return captureableby[teamnumber];
 }
 
@@ -91,6 +96,14 @@ public func SetCaptureableBy(int teamnumber, bool captureable)
 public func IsFrontlinesFullyCapturedBy(int teamnumber)
 {
   return teamnumber == team && process == 100;
+}
+
+// like GetTeam(), but returns the team iff IsFrontlinesFullyCapturedBy(team) == true
+public func GetFrontlinesTeam()
+{
+  if(process == 100)
+    return GetTeam();
+  return nil;
 }
 
 
@@ -330,10 +343,11 @@ public func Capture(int iTeam, bool bSilent)
   if(!bSilent)
   {
     if(lastowner == team) fRegained = true;
-    GameCallEx("FlagCaptured", this, team, pAttackers, fRegained);
+    GameCallEx("FlagCaptured", this, team, pAttackers, fRegained, gavetickets);
   }
-  ResetAttackers();
+  gavetickets = true;
   lastowner = team;
+  ResetAttackers();
   UpdateFlag();
 }
 
@@ -344,7 +358,7 @@ protected func Capturing(int iTeam)
 
 public func NoTeam()
 {
-  team = 0;
+  team = nil;
   process = 0;
   attacker = 0;
   capt = false;
@@ -421,8 +435,9 @@ public func DoProcess(int iTeam, int iAmount)
   if(old > process)
     trend = -1;
 
-  if((old == 100 && trend < 0))
-    GameCallEx("FlagFrontlinesStatusChange", this, team, false);
+  if(IsFrontlines())
+    if((old == 100 && trend < 0))
+      GameCallEx("FlagFrontlinesStatusChange", this, team, false);
 
   if((old == 100 && trend < 0) || (old == 0 && trend > 0))
   {
@@ -438,15 +453,18 @@ public func DoProcess(int iTeam, int iAmount)
   //Flagge ist fertig übernommen
   if((process >= 100) && (old < 100))
   {
-    GameCallEx("FlagFrontlinesStatusChange", this, team, true);
+    if(IsFrontlines())
+      GameCallEx("FlagFrontlinesStatusChange", this, team, true);
     Capture(iTeam);
   }
 
   //Neutrale Flagge
   if((process <= 0) && (old > 0))
   {
-    if(team && lastowner != iTeam) GameCallEx("FlagLost", this, team, iTeam, pAttackers);
-    //lastowner = team;
+    if(team && lastowner != iTeam) {
+      GameCallEx("FlagLost", this, team, iTeam, pAttackers, gavetickets);
+      gavetickets = false;
+    }
     attacker = 0;
     capt = false;
     team = iTeam;

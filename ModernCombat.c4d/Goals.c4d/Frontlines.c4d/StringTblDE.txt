@@ -13,15 +13,13 @@ Tickets=Tickets
 MoreTickets=mehr Tickets
 LessTickets=weniger Tickets
 TicketBleed=Ticketabzug
-TicketBleedDesc=Teams mit weniger Flaggenposten verlieren über Zeit Tickets.
 Finished=Fertig
 
 // Rundenende
 
-TeamHasWon={{GOCC}} <c ffff33>Besitznahme</c> - Rundenende|Team <c %x>%s</c> hat diese Schlacht <c ffff33>gewonnen</c>!
+TeamHasWon={{GFRN}} <c ffff33>Frontlines</c> - Rundenende|Team <c %x>%s</c> hat diese Schlacht <c ffff33>gewonnen</c>!
 
 // Sonstiges
 // todo
 
-GoalDesc=Alle Teams starten mit einer bestimmten Menge an Flaggenposten und Tickets. Ziel ist das Erobern|weiterer Flaggenposten und das Vermindern der feindlichen Tickets. Der Tod eines Clonks| kostet das Team ein Ticket. Ein Flaggenposten gilt als Einstiegspunkt für sein Team.|Ein Team verliert bei Verbrauch des letzten Tickets oder Verlust aller Flaggenposten und lebenden Clonks.|Verfügt ein Team über die Mehrheit der Flaggenposten, verlieren alle anderen Teams über Zeit zusätzlich Tickets.||{{IC12}} Flaggenposten / {{SM03}} Ticket / {{SM27}} Zeit bis Ticketverlust / {{SM26}} Team
-GoalDesc2=Alle Teams starten mit einer bestimmten Menge an Flaggenposten und Tickets. Ziel ist das Erobern|weiterer Flaggenposten und das Vermindern der feindlichen Tickets. Der Tod eines Clonks| kostet das Team ein Ticket. Ein Flaggenposten gilt als Einstiegspunkt für sein Team.|Ein Team verliert bei Verbrauch des letzten Tickets oder Verlust aller Flaggenposten und lebenden Clonks.||{{IC12}} Flaggenposten / {{SM03}} Ticket / {{SM26}} Team
+GoalDesc2=Alle Teams starten mit einer bestimmten Menge an Flaggenposten und Tickets. Ziel ist das Erobern|weiterer Flaggenposten und das Vermindern der feindlichen Tickets. Der Tod eines Clonks| kostet das Team ein Ticket.|Pro gehaltenem Flaggenposten erhält das Team 5 Tickets.|<c ff0000>Im Gegensat zu Besitznahme kann das Team einen Flaggenposten nur einnehmen, wenn das Team einen benachbarten Flaggenposten hält.</c>|Ein Flaggenposten gilt als Einstiegspunkt für sein Team.|Ein Team verliert bei Verbrauch des letzten Tickets oder Verlust aller Flaggenposten.||{{IC12}} Flaggenposten / {{SM03}} Ticket / {{SM26}} Team
