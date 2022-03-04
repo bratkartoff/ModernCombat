@@ -73,7 +73,11 @@ public func SetStartFlagForTeam(int teamnumber)
 }
 
 // todo: colors
-public func InitCaptureableArray() { captureableby = CreateArray(GetTeamCount()); }
+public func InitCaptureableArray()
+{
+  captureableby = CreateArray(GetTeamCount());
+  UpdateFlag();
+}
 
 public func IsCaptureableBy(int teamnumber)
 {
@@ -87,9 +91,20 @@ public func IsCaptureableBy(int teamnumber)
   return captureableby[teamnumber];
 }
 
+public func IsCaptureableByEnemy()
+{
+  if(!IsFrontlines())
+    return true;
+  for(var i = 0; i < GetLength(captureableby); i++)
+    if(captureableby[i] && i != GetTeam())
+      return true;
+  return false;
+}
+
 public func SetCaptureableBy(int teamnumber, bool captureable)
 {
   captureableby[teamnumber] = captureable;
+  UpdateFlag();
 }
 
 // IsFullyCaptured already exists and returns whether the flag was captured least once
@@ -390,6 +405,12 @@ public func UpdateFlag()
     {
       if(GetPlayerTeam(GetPlayerByIndex(i)) != team) continue;
       flag->SetOwner(GetPlayerByIndex(i));
+      if(!IsCaptureableByEnemy()) {
+        // Desaturate
+        var color = RGB2HSL(flag->GetColorDw());
+        color = HSL2RGB(SetRGBaValue(color, GetRGBaValue(color, 2) / 2, 2));
+        SetColorDw(color, flag);
+      }
       break;
     }
   }
@@ -401,6 +422,11 @@ public func UpdateFlag()
 
   //Flaggenposition aktualisieren
   SetFlagPos(process);
+}
+
+public func GetFlagColor()
+{
+  return flag->GetColorDw();
 }
 
 protected func SetFlagPos(int iPercentage)

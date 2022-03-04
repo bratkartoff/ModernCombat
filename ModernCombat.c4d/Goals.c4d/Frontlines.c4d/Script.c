@@ -267,16 +267,16 @@ private func UpdateScoreboard()
   for(var flag in GetFlags())
   {
     //Teamfarbe und Flaggenzustand ermitteln
-    var teamclr = GetTeamColor(flag->GetTeam()),
-    prog = flag->GetProcess();
+    var flagclr = flag->GetFlagColor();
+    var prog = flag->GetProcess();
     //Färbung je nach Zustand
     if(!flag->~IsFullyCaptured())
       var nameclr = RGB(255,255,255);
     else
-      var nameclr = teamclr;
-    var percentclr = RGBa(Interpolate2(255, GetRGBaValue(teamclr, 1), prog, 100),
-    Interpolate2(255, GetRGBaValue(teamclr, 2), prog, 100), 
-    Interpolate2(255, GetRGBaValue(teamclr, 3), prog, 100));
+      var nameclr = flagclr;
+    var percentclr = RGBa(Interpolate2(255, GetRGBaValue(flagclr, 1), prog, 100),
+    Interpolate2(255, GetRGBaValue(flagclr, 2), prog, 100), 
+    Interpolate2(255, GetRGBaValue(flagclr, 3), prog, 100));
 
     //Entsprechend der Ausrichtung des Szenarios sortieren
     if(GetDirection() == GOCC_Horizontal)
