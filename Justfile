@@ -1,16 +1,17 @@
-name := "ExperimentalDoNotSave.c4d"
+name := "CMC_Operation_Metro_Frontlines.c4s"
 start:
 	clonk "ModernCombat.c4f/Classic.c4f/CMC_OperationMetro.c4s"
 
 copy: pack
-	cp {{name}} /opt/LegacyClonk
+	cp ~/tst/{{name}} /opt/LegacyClonk
 
 
 push: pack
-	scp {{name}} $wyip:/opt/LegacyClonk
+	scp ~/tst/{{name}} $wyip:/opt/LegacyClonk
 
 pack:
-	cp -r ModernCombat.c4d/Goals.c4d/Occupation.c4d .
-	c4group Occupation.c4d -p
-	mv Occupation.c4d {{name}}
+	cp -r {{name}}/ ~/tst
+	cp -r ModernCombat.c4d/Goals.c4d/Occupation.c4d ~/tst/{{name}}
+	cp -r ModernCombat.c4d/Goals.c4d/Frontlines.c4d ~/tst/{{name}}
+	c4group ~/tst/{{name}} -p
 
