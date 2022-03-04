@@ -301,18 +301,19 @@ private func UpdateScoreboard()
   }
 
   //Teams und deren Timer und Tickets auflisten
+  var maxTickets = iStartTickets + GetLength(GetFlags()) * TicketsPerFlag();
   for(var j = 0; j < GetTeamCount(); j++)
   {
     var iTeam = GetTeamByIndex(j);
     if(TeamAlive(iTeam))
     {
-      SetScoreboardData(i, GOCC_FlagColumn, Format("<c %x>%s</c>", GetTeamColor(iTeam), GetTeamName(iTeam)), base+3+iStartTickets-GetTickets(iTeam));
+      SetScoreboardData(i, GOCC_FlagColumn, Format("<c %x>%s</c>", GetTeamColor(iTeam), GetTeamName(iTeam)), base+3+maxTickets-GetTickets(iTeam));
       SetScoreboardData(i, GOCC_ProgressColumn, Format("<c ffbb00>%d</c>", GetTickets(iTeam)));
     }
     else
     {
-      SetScoreboardData(i, GOCC_FlagColumn, "");
-      SetScoreboardData(i, GOCC_ProgressColumn, "");
+      SetScoreboardData(i, GOCC_FlagColumn, 0);
+      SetScoreboardData(i, GOCC_ProgressColumn, 0);
     }
     i++;
   }
@@ -612,7 +613,7 @@ private func TeamAlive(int teamnumber)
   // game hasn't started yet
   if(FindObject(CHOS))
     return true;
-  return (GetTeamPlayerCount(teamnumber) || 0) > 0 && aTicket[teamnumber-1] > 0;
+  return (GetTeamPlayerCount(teamnumber) || 0) > 0 && GetTickets(teamnumber) > 0;
 }
 
 private func GetTeamWithAllFlags()
