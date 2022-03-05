@@ -446,11 +446,11 @@ private func FlagFrontlinesStatusChange(object flag, int teamnumber, bool captur
   } else {
     state = partiallyCaptured;
     if (captured && nCaptured == 1)
-      oldState == notCaptured;
+      oldState = notCaptured;
     else if (!captured && nFlags - 1 == nCaptured)
-      oldState == fullyCaptured;
+      oldState = fullyCaptured;
     else
-      return; // no state change
+      return; // was partially captured -> no state change
   }
 
   // state != oldState at this point
