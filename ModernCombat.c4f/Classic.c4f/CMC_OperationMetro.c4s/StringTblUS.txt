@@ -7,11 +7,13 @@ RepeatButtonDesc=Restart the round.
 Team1=Eurocorps
 Team2=Aggressors
 
-Flag1=Line A
-Flag2=Line B
-Flag3=Line C
-Flag4=Line D
-Flag5=Line E
+Flag0=Line A
+Flag1=Line B
+Flag2=Line C
+Flag2a=Line C (upper platform)
+Flag2b=Line C (lower platform)
+Flag3=Line D
+Flag4=Line E
 
 Target1=Data Server
 Target2=Backup Server
