@@ -1,4 +1,4 @@
-/*-- Frontlines (größtenteils Besitznahme --*/
+/*-- Frontlines --*/
 
 #strict 3
 #include TEAM
@@ -9,9 +9,6 @@ local aTicket;
 local aTeamTimers;
 local aFlagGroups; // array of groups (group: array of flags)
 local aFlags; // same information, for performance. Only used for reading
-
-static const GOCC_Horizontal		= 1;
-static const GOCC_Vertical		= 2;
 
 private func StartTickets()		{return 25;}		//Standardticketzahl
 private func TicketsPerFlag()		{return 5;}
@@ -54,7 +51,7 @@ public func SetFlagGroups(flagGroups)
   {
     for(var flag in group)
     {
-      flag->InitCaptureableArray();
+      flag->InitCapturableArray();
       // set aFlags (flattened flagGroups
       aFlags[] = flag;
     }
@@ -115,13 +112,6 @@ public func CreateSpawners()
 }
 
 /* Globale Funktionen */
-
-public func GetDirection()
-{
-  var call = GameCall("OccupationDir");
-  if(call) return call;
-  return GOCC_Horizontal;
-}
 
 // only exists because of the flag chooser
 // removed the automatic sorting by position via FindObjects because
@@ -227,7 +217,6 @@ private func ChangeStartTickets(id dummy, int iChange)
 /* Scoreboard */
 
 static const GOCC_FlagColumn		= 1;
-static const GOCC_TimerColumn		= 2;
 static const GOCC_ProgressColumn	= 3;
 
 protected func InitScoreboard()
@@ -254,14 +243,7 @@ private func UpdateScoreboard()
   //Wird noch eingestellt
   if(FindObject(CHOS) || IsFulfilled()) return;
 
-  var i = 0;
-  var data, base;
-
-  //Szenarioausrichtung ermitteln
-  if(GetDirection() == GOCC_Horizontal)
-    base = LandscapeWidth();
-  if(GetDirection() == GOCC_Vertical)
-    base = LandscapeHeight();
+  var row = 0;
 
   //Flaggenposten auflisten
   for(var flag in GetFlags())
@@ -270,34 +252,37 @@ private func UpdateScoreboard()
     var flagclr = flag->GetFlagColor();
     var prog = flag->GetProcess();
     //Färbung je nach Zustand
-    if(!flag->~IsFullyCaptured())
-      var nameclr = RGB(255,255,255);
+    var nameclr, interpolationTarget;
+    var teams = flag->CountCapturableBy();
+    if(teams >= 2)
+      interpolationTarget = 255;
     else
-      var nameclr = flagclr;
-    var percentclr = RGBa(Interpolate2(255, GetRGBaValue(flagclr, 1), prog, 100),
-    Interpolate2(255, GetRGBaValue(flagclr, 2), prog, 100), 
-    Interpolate2(255, GetRGBaValue(flagclr, 3), prog, 100));
+      interpolationTarget = 127;
 
-    //Entsprechend der Ausrichtung des Szenarios sortieren
-    if(GetDirection() == GOCC_Horizontal)
-      data = GetX(flag);
-    if(GetDirection() == GOCC_Vertical)
-      data = GetY(flag);
+    if(flag->IsFullyCaptured())
+      nameclr = flagclr;
+    else if(teams >= 1)
+      nameclr = RGB(255, 255, 255);
+    else
+      nameclr = RGB(127,127,127);
+    var percentclr = RGBa(Interpolate2(interpolationTarget, GetRGBaValue(flagclr, 1), prog, 100),
+    Interpolate2(interpolationTarget, GetRGBaValue(flagclr, 2), prog, 100), 
+    Interpolate2(interpolationTarget, GetRGBaValue(flagclr, 3), prog, 100));
 
-    SetScoreboardData(i, GOCC_FlagColumn, Format("<c %x>%s</c>", nameclr, GetName(flag)), data);
-    SetScoreboardData(i, GOCC_ProgressColumn, Format("<c %x>%d%</c>", percentclr, flag->GetProcess()));
-    i++;
+    SetScoreboardData(row, GOCC_FlagColumn, Format("<c %x>%s</c>", nameclr, GetName(flag)), row);
+    SetScoreboardData(row, GOCC_ProgressColumn, Format("<c %x>%d%</c>", percentclr, flag->GetProcess()));
+    row++;
   }
 
   //Leerzeile und Spaltentitel
-  if(i != 1)
+  if(row != 1)
   {
-    SetScoreboardData(i, GOCC_FlagColumn, " ", base+1);
-    SetScoreboardData(i, GOCC_ProgressColumn, " ");
-    i++;
-    SetScoreboardData(i, GOCC_FlagColumn, "{{SM26}}", base+2);
-    SetScoreboardData(i, GOCC_ProgressColumn, "{{SM03}}");
-    i++;
+    SetScoreboardData(row, GOCC_FlagColumn, " ", row);
+    SetScoreboardData(row, GOCC_ProgressColumn, " ");
+    row++;
+    SetScoreboardData(row, GOCC_FlagColumn, "{{SM26}}", row);
+    SetScoreboardData(row, GOCC_ProgressColumn, "{{SM03}}");
+    row++;
   }
 
   //Teams und deren Timer und Tickets auflisten
@@ -307,15 +292,15 @@ private func UpdateScoreboard()
     var iTeam = GetTeamByIndex(j);
     if(TeamAlive(iTeam))
     {
-      SetScoreboardData(i, GOCC_FlagColumn, Format("<c %x>%s</c>", GetTeamColor(iTeam), GetTeamName(iTeam)), base+3+maxTickets-GetTickets(iTeam));
-      SetScoreboardData(i, GOCC_ProgressColumn, Format("<c ffbb00>%d</c>", GetTickets(iTeam)));
+      SetScoreboardData(row, GOCC_FlagColumn, Format("<c %x>%s</c>", GetTeamColor(iTeam), GetTeamName(iTeam)), row+3+maxTickets-GetTickets(iTeam));
+      SetScoreboardData(row, GOCC_ProgressColumn, Format("<c ffbb00>%d</c>", GetTickets(iTeam)));
     }
     else
     {
-      SetScoreboardData(i, GOCC_FlagColumn, 0);
-      SetScoreboardData(i, GOCC_ProgressColumn, 0);
+      SetScoreboardData(row, GOCC_FlagColumn, 0);
+      SetScoreboardData(row, GOCC_ProgressColumn, 0);
     }
-    i++;
+    row++;
   }
 
   SortScoreboard(GOCC_FlagColumn);
@@ -458,17 +443,17 @@ private func FlagFrontlinesStatusChange(object flag, int teamnumber, bool captur
   // update capturabeby arrays of the flags in the group and the neighboring flags
   if (state == fullyCaptured) {
     for (var neighbor in GetNeighbors(group))
-      SetGroupCaptureableBy(neighbor, teamnumber, true);
+      SetGroupCapturableBy(neighbor, teamnumber, true);
   } else {
     if (state == partiallyCaptured)
-      SetGroupCaptureableBy(group, teamnumber, true);
+      SetGroupCapturableBy(group, teamnumber, true);
     else
-      SetGroupCaptureableBy(group, teamnumber, AnyNeighborFullyCaptured(group, teamnumber));
+      SetGroupCapturableBy(group, teamnumber, AnyNeighborFullyCaptured(group, teamnumber));
 
     if (oldState == fullyCaptured)
       for (var neighbor in GetNeighbors(group))
         if (!AnyNeighborFullyCaptured(neighbor, teamnumber))
-          SetGroupCaptureableBy(neighbor, teamnumber, false);
+          SetGroupCapturableBy(neighbor, teamnumber, false);
   }
 }
 
@@ -516,9 +501,9 @@ private func GetNeighbors(array flagGroup) {
   return neighbors;
 }
 
-private func SetGroupCaptureableBy(array flagGroup, int teamnumber, bool captureable) {
+private func SetGroupCapturableBy(array flagGroup, int teamnumber, bool capturable) {
   for(var flag in flagGroup)
-    flag->SetCaptureableBy(teamnumber, captureable);
+    flag->SetCapturableBy(teamnumber, capturable);
 }
 
 

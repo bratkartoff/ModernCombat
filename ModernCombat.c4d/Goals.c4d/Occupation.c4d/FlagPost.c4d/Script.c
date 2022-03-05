@@ -4,7 +4,7 @@
 
 local team, process, range, flag, bar, attacker, spawnpoints, trend, capt, pAttackers, lastowner, iconState, captureradiusmarker, noenemys, nofriends;
 local startflagforteam;
-local captureableby; // array of booleans (index: team index)
+local capturableby; // array of booleans (index: team index)
 local gavetickets; // bool: whether 5 tickets were given to any team
 
 public func GetAttacker()		{return attacker;}
@@ -64,7 +64,7 @@ public func Set(string szName, int iRange, int iSpeed, int iValue)
 }
 
 /* Frontlines */
-private func IsFrontlines() { return captureableby != nil; }
+private func IsFrontlines() { return capturableby != nil; }
 
 public func SetStartFlagForTeam(int teamnumber)
 {
@@ -73,13 +73,13 @@ public func SetStartFlagForTeam(int teamnumber)
 }
 
 // todo: colors
-public func InitCaptureableArray()
+public func InitCapturableArray()
 {
-  captureableby = CreateArray(GetTeamCount());
+  capturableby = CreateArray(GetTeamCount());
   UpdateFlag();
 }
 
-public func IsCaptureableBy(int teamnumber)
+public func IsCapturableBy(int teamnumber)
 {
   // OCC
   if (!IsFrontlines())
@@ -87,23 +87,22 @@ public func IsCaptureableBy(int teamnumber)
   // start flags are always recapturable
   if (teamnumber == startflagforteam)
     return true;
-  // set by Frontlines goal object via SetCaptureableBy
-  return captureableby[teamnumber];
+  // set by Frontlines goal object via SetCapturableBy
+  return capturableby[teamnumber];
 }
 
-public func IsCaptureableByEnemy()
+public func CountCapturableBy()
 {
-  if(!IsFrontlines())
-    return true;
-  for(var i = 0; i < GetLength(captureableby); i++)
-    if(captureableby[i] && i != GetTeam())
-      return true;
-  return false;
+  var teams = 0;
+  for(var i = 0; i < GetTeamCount(); i++)
+    if(IsCapturableBy(GetTeamByIndex(i)))
+      teams++;
+  return teams;
 }
 
-public func SetCaptureableBy(int teamnumber, bool captureable)
+public func SetCapturableBy(int teamnumber, bool capturable)
 {
-  captureableby[teamnumber] = captureable;
+  capturableby[teamnumber] = capturable;
   UpdateFlag();
 }
 
@@ -251,7 +250,7 @@ protected func Timer()
     if(!PathFree4K(GetX(this()),GetY(this())-GetDefHeight(GetID())/2,GetX(clonk),GetY(clonk),4)) continue;
     if(GetPlayerTeam(GetOwner(clonk)) == team)
     {
-      if(IsCaptureableBy(team)) {
+      if(IsCapturableBy(team)) {
         friends++;
         aFriends[GetLength(aFriends)] = clonk;
       }
@@ -259,7 +258,7 @@ protected func Timer()
     else
     {
       opposition = GetPlayerTeam(GetOwner(clonk));
-      if(IsCaptureableBy(opposition)) {
+      if(IsCapturableBy(opposition)) {
         enemys++;
         aEnemies[GetLength(aEnemies)] = clonk;
       }
@@ -405,11 +404,12 @@ public func UpdateFlag()
     {
       if(GetPlayerTeam(GetPlayerByIndex(i)) != team) continue;
       flag->SetOwner(GetPlayerByIndex(i));
-      if(!IsCaptureableByEnemy()) {
-        // Desaturate
-        var color = RGB2HSL(flag->GetColorDw());
-        color = HSL2RGB(SetRGBaValue(color, GetRGBaValue(color, 2) / 2, 2));
-        SetColorDw(color, flag);
+      // Frontlines: desaturate flag if it isn't capturable by an enemy team
+      if(CountCapturableBy() == 1)
+      {
+        var hsl = RGB2HSL(flag->GetColorDw());
+        var newColor = HSL2RGB(SetRGBaValue(hsl, GetRGBaValue(hsl, 2) / 2, 2));
+        flag->SetColorDw(newColor);
       }
       break;
     }
@@ -417,7 +417,13 @@ public func UpdateFlag()
   else
   {
     SetOwner(NO_OWNER, flag);
-    SetColorDw(RGB(255, 255, 255), flag);
+    // Desaturating doesn't work for white, reduce lightness instead
+    var color;
+    if(CountCapturableBy() >= 1)
+      color = RGB(255, 255, 255);
+    else
+      color = RGB(127,127,127);
+    flag->SetColorDw(color);
   }
 
   //Flaggenposition aktualisieren
