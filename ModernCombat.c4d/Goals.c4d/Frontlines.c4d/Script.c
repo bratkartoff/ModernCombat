@@ -254,6 +254,8 @@ private func UpdateScoreboard()
     //Färbung je nach Zustand
     var nameclr, interpolationTarget;
     var teams = flag->CountCapturableBy();
+	// percentage:
+	// grey if it can be captured by the other team
     if(teams >= 2)
       interpolationTarget = 255;
     else
@@ -693,7 +695,7 @@ public func FxIntWarnTimer(object pTarget, int iEffectNumber, int iEffectTime)
 
 global func AddGOCCWarnEffect(object pTarget, object pPoint, int iRotation)
 {
-  AddEffect("IntWarn", pTarget, 1, 35, 0, GOCC, pPoint);
+  AddEffect("IntWarn", pTarget, 1, 35, this, GOCC, pPoint);
   if(iRotation)
     SetR(iRotation, pTarget);
   return true;
