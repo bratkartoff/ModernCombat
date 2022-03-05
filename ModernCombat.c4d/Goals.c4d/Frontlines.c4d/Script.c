@@ -21,7 +21,7 @@ public func CustomSpawnSystem()		{return true;}
 public func RejectChoosedClassInfo()	{return true;}
 public func GoalDescription()
 {
-  return "$GoalDesc2$";
+  return "$GoalDesc$";
 }
 
 

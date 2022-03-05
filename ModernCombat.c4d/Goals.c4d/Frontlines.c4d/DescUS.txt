@@ -4,6 +4,7 @@ Unlike Occupation, a team can only capture a flag post if it completely controls
 
 Every team owns a certain number of tickets, which equal respawns.
 
-A team is eliminated when all tickets are lost. A team looses tickets for every dead team member as well as enemy teams which occupy more flag posts and therefore reduce the own ticket count over time.
+A team is eliminated when all tickets are lost. A team looses tickets for every dead team member.
+A team gains 5 tickets by capturing a flag post. Losing the flag post subtracts 5 tickets.
 
-A team can be defeated prematurely by eliminating all of their team members and neutralizing all their flag posts.
+A team can win prematurely by capturing all flag posts.

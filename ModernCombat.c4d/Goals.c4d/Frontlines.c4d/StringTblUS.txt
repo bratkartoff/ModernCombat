@@ -12,8 +12,6 @@ MsgTicketsLow=<c ff0000>Warning</c>: Our reinforcements are running low, only <c
 Tickets=Tickets
 MoreTickets=more Tickets
 LessTickets=less Tickets
-TicketBleed=Ticket Bleed
-TicketBleedDesc=Teams with less flag posts lose tickets over time.
 Finished=Finished
 
 // End of round
@@ -22,5 +20,4 @@ TeamHasWon={{GOCC}} <c ffff33>Occupation</c> - Round End|Team <c %x>%s</c> has <
 
 // Misc
 
-GoalDesc=All teams start off with a certain amount of flag posts and tickets. The goal ist to conquer additional|flag posts and deplete enemy tickets. The death of a clonk costs its team a ticket. A flag post is an|access point for its team. A team is defeated once it lost all tickets or all flag posts and living|clonks. When a team holds a majority of flag posts, all other teams lose additional tickets over time.||{{IC12}} Flag Post / {{SM03}} Ticket / {{SM27}} Time till Ticket Loss / {{SM26}} Team
-GoalDesc2=All teams start off with a certain amount of flag posts and tickets. The goal ist to conquer additional|flag posts and deplete enemy tickets. The death of a clonk costs its team a ticket. A flag post is an|access point for its team. A team is defeated once it lost all tickets or all flag posts and living|clonks.||{{IC12}} Flag Post / {{SM03}} Ticket / {{SM26}} Team
+GoalDesc=The goal ist to capture flag posts to secure more respawn positions for the team as well as to extend its influence.||Unlike Occupation, a team can only capture a flag post if it completely controls a nearby flag post.||Every team owns a certain number of tickets, which equal respawns.||A team is eliminated when all tickets are lost. A team looses tickets for every dead team member.|A team gains 5 tickets by capturing a flag post. Losing the flag post subtracts 5 tickets.||A team can win prematurely by capturing all flag posts.||{{IC12}} Flag Post / {{SM03}} Ticket / {{SM26}} Team
