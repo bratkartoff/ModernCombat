@@ -379,8 +379,9 @@ public func ChooserFinished()
     CreateObject(SGNP, 5890, 600, -1)->Set("Helicopter",1);
   }
 
-  //OCC-Spielziel
-  if(FindObject(GOCC))
+  //OCC-Spielziel oder Frontlines
+  var frnGoalObj = FindObject(GFRN);
+  if(FindObject(GOCC) || frnGoalObj)
   {
     //Flaggenposten
     aFlag[0] = CreateObject(OFPL,1570,580,NO_OWNER);
@@ -389,7 +390,7 @@ public func ChooserFinished()
     if(aTeams[1] == true)
     {
       aFlag[0]->Set("$Flag1$",0,4);
-      aFlag[0]->Capture(1,1);
+      aFlag[0]->SetStartFlagForTeam(1);
     }
     else
     {
@@ -419,12 +420,15 @@ public func ChooserFinished()
     if(aTeams[2] == true)
     {
       aFlag[4]->Set("$Flag5$",0,4);
-      aFlag[4]->Capture(2,1);
+      aFlag[4]->SetStartFlagForTeam(2);
     }
     else
     {
       aFlag[4]->Set("$Flag5$");
     }
+
+    if (frnGoalObj)
+      frnGoalObj->SetFlagGroups(frnGoalObj->LinearScenario(aFlag));
   }
 
   //HTF-Spielziel

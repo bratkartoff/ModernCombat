@@ -533,7 +533,8 @@ public func ChooserFinished()
   }
 
   //OCC-Spielziel
-  if(FindObject(GOCC))
+  var frnGoalObj = FindObject(GFRN);
+  if(FindObject(GOCC) || frnGoalObj)
   {
     //Flaggenposten
     aFlag[0] = CreateObject(OFPL,1320,500,NO_OWNER);
@@ -577,6 +578,9 @@ public func ChooserFinished()
     }
     else
       aFlag[4]->Set("$Flag5$");
+
+    if(frnGoalObj)
+      frnGoalObj->SetFlagGroups(frnGoalObj->LinearScenario(aFlag));
 
     //MAV-Stationen
     CreateObject(MVSN, 1350, 500, -1)->Set(1520,530,1);
