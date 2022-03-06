@@ -3,6 +3,7 @@
 #strict 2
 
 local szFunction, iClass;
+local spawn,flagpoles,selection,oldvisrange,oldvisstate;
 
 public func IsSpawnObject()	{return true;}
 
@@ -30,10 +31,9 @@ global func CreateGOCCSpawner(object pCrew, int iChoosedClass)
 
 global func FindGOCC()
 {
-  return FindObject(GOCC) || FindObject(GFRN);
+  return FindObject2(Find_Or(Find_ID(GOCC), Find_ID(GFRN)));
 }
 
-local spawn,flagpoles,selection,oldvisrange,oldvisstate;
 
 protected func Collection2(object pObject)
 {
@@ -107,6 +107,7 @@ global func GetFlagDistance(object pFlag)
   return dist;
 }
 
+// todo: why is this global (lots of FindObject calls)
 global func GetBestFlag(int iTeam)
 {
   var capture;
@@ -190,10 +191,13 @@ public func SpawnMenu()
   var team = GetPlayerTeam(GetOwner(crew));
   if(!team) return;
 
-  CloseMenu(crew);
+  //CloseMenu(crew);
 
   var tmp,point;
-  CreateMenu(OFLG,crew,0,C4MN_Extra_Info,"$SpawnMenu$",0,C4MN_Style_Dialog);
+  if(GetMenu(crew))
+    ClearMenuItems(crew);
+  else
+    CreateMenu(OFLG,crew,0,C4MN_Extra_Info,"$SpawnMenu$",0,C4MN_Style_Dialog);
 
   for(point in flagpoles)
   {
@@ -250,7 +254,7 @@ protected func Timer()
 
   if(!flagpoles) return;
 
-  selection = GetMenuSelection (crew); 
+  selection = GetMenuSelection (crew);
 
   if(GetSelected())
     ShowFlagpole(GetSelected(), Contents(), this, oldvisrange);
@@ -287,10 +291,7 @@ global func ShowFlagpole(object pObject, object pCrew, object pContainer, int iM
 
 protected func MenuQueryCancel()
 {
-  if(spawn)
-    return false;
-  else
-    return true;
+  return !spawn;
 }
 
 protected func GraphicsHelper(object pFlagpole)
@@ -311,15 +312,17 @@ protected func GraphicsHelper(object pFlagpole)
 
   if(pFlagpole->IsAttacked())
   {
-    SetGraphics ("WARN",tmp,GetID(tmp),1,GFXOV_MODE_Picture);
+    //SetGraphics ("WARN",tmp,GetID(tmp),1,GFXOV_MODE_Picture);
   }
 
   if(pFlagpole->GetTrend())
   {
+    /*
     if(pFlagpole->GetTrend() < 0)
       SetGraphics ("DOWN",tmp,GetID(tmp),2,GFXOV_MODE_Picture);
     else
       SetGraphics ("UP",tmp,GetID(tmp),2,GFXOV_MODE_Picture);
+      */
   }
 
   return tmp;
@@ -344,18 +347,9 @@ protected func SetSelected(object flag)
 
   if(!flag) return;
 
-  var i = FindFlag(flag);
+  var i = GetIndexOf(flag, flagpoles);
   if(i == -1) return;
 
   selection = i;
   SelectMenuItem(selection,crew);
-}
-
-protected func FindFlag(object flag)
-{
-  for(var i = GetLength(flagpoles)-1;i > 0;i--)
-    if(flag == flagpoles[i])
-      return i;
-
-  return -1;
 }
