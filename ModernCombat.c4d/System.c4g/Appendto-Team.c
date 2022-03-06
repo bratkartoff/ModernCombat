@@ -84,7 +84,8 @@ global func GetActiveTeamCount(bool fAliveOnly)
 
 global func GetTeamPlayerCount(int iTeam)
 {
-  for (var i, count; i < GetPlayerCount(); i++)
+  var count = 0;
+  for (var i; i < GetPlayerCount(); i++)
     if (GetPlayerTeam(GetPlayerByIndex(i)) == iTeam && GetPlayerName(GetPlayerByIndex(i)))
       count++;
   return count;
