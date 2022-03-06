@@ -711,7 +711,8 @@ public func ChooserFinished()
   CreateObject(SHRK, 7700, 650, -1)->AutoRespawn();
 
   //OCC-Spielziel
-  if(FindObject(GOCC))
+  var frnGoalObj = FindObject(GFRN);
+  if(FindObject(GOCC) || frnGoalObj)
   {
     //Flaggenposten
     aFlag[0] = CreateObject(OFPL,1205,490,NO_OWNER);
@@ -721,7 +722,7 @@ public func ChooserFinished()
     if(aTeams[1] == true)
     {
       aFlag[0]->Set("$Flag1$",0,4);
-      aFlag[0]->Capture(1,1);
+      aFlag[0]->SetStartFlagForTeam(1);
     }
     else
     {
@@ -773,12 +774,16 @@ public func ChooserFinished()
     if(aTeams[2] == true)
     {
       aFlag[6]->Set("$Flag7$",0,4);
-      aFlag[6]->Capture(2,1);
+      aFlag[6]->SetStartFlagForTeam(2;
     }
     else
     {
       aFlag[6]->Set("$Flag7$");
     }
+
+    if(frnGoalObj)
+      frnGoalObj->SetFlagGroups(frnGoalObj->LinearScenario(aFlag));
+
 
     //SSA Besitzer setzen
     if(aTeams[1] == true)
