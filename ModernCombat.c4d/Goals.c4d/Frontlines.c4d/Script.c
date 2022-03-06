@@ -373,31 +373,29 @@ public func FlagCaptured(object pFlag, int iTeam, array pAttackers, bool fRegain
   }
   else
   {
-    var i = 0;
+    var wealthBonus = 15;
+    var icon = IC10;
+    var pointType = "OPConquest";
+    var ticketMessage = Format("<c ffff33>{{SM03}}</c> +%d", TicketsPerFlag());
+    DoTickets(iTeam, TicketsPerFlag());
+
     for(var pClonk in pAttackers)
     {
-      if(!i)
-      {
-        //Punkte bei Belohnungssystem (Flaggenposten erobert)
-        DoPlayerPoints(BonusPoints("OPConquest"), RWDS_TeamPoints, GetOwner(pClonk), pClonk, IC10);
-        //Achievement-Fortschritt (Flagship)
-        DoAchievementProgress(1, AC07, GetOwner(pClonk));
-        //Geldbonus: 15 Clunker
-        DoWealth(GetOwner(pClonk), 15);
-      }
-      else
-      {
-        //Punkte bei Belohnungssystem (Hilfe bei Flaggenposteneroberung)
-        DoPlayerPoints(BonusPoints("OPConquestAssist"), RWDS_TeamPoints, GetOwner(pClonk), pClonk, IC11);
-        //Achievement-Fortschritt (Flagship)
-        DoAchievementProgress(1, AC07, GetOwner(pClonk));
-        //Geldbonus: 10 Clunker
-        DoWealth(GetOwner(pClonk), 10);
-      }
-      i++;
+      // Punkte bei Belohnungssystem
+      DoPlayerPoints(BonusPoints(pointType), RWDS_TeamPoints, GetOwner(pClonk), pClonk, icon);
+      // Achievement-Fortschritt (Flagship)
+      DoAchievementProgress(1, AC07, GetOwner(pClonk));
+      // Geldbonus
+      DoWealth(GetOwner(pClonk), wealthBonus);
+      // Nachricht Ticketbonus
+      AddEffect("PointMessage", pClonk, 130, 1, pClonk, 0, ticketMessage);
+
+      // different value for capturing assist
+      pointType = "OPConquestAssist";
+      icon = IC11;
+      wealthBonus = 10;
     }
 
-    DoTickets(iTeam, 3);
   }
 
   //Eventnachricht: Flaggenposten erobert
