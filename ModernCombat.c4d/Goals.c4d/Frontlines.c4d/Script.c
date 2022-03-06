@@ -11,7 +11,7 @@ local aFlagGroups; // array of groups (group: array of flags)
 local aFlags; // same information, for performance. Only used for reading
 
 private func StartTickets()		{return 25;}		//Standardticketzahl
-private func TicketsPerFlag()		{return 5;}
+private func TicketsPerFlag()		{return 3;}
 public func IsConfigurable()		{return true;}
 public func GoalExtraValue()					//Spielzielinformationen an Scoreboard weitergeben
 {
@@ -249,17 +249,16 @@ private func UpdateScoreboard()
   for(var flag in GetFlags())
   {
     //Teamfarbe und Flaggenzustand ermitteln
-    var flagclr = flag->GetFlagColor();
-    var prog = flag->GetProcess();
-    //Färbung je nach Zustand
     var nameclr, interpolationTarget;
     var teams = flag->CountCapturableBy();
-	// percentage:
-	// grey if it can be captured by the other team
-    if(teams >= 2)
-      interpolationTarget = 255;
-    else
-      interpolationTarget = 127;
+
+    var flagclr = flag->GetFlagColor();
+    // desaturate if the flag isn't capturable by an enemy team
+    if(flag->GetTeam() && teams == 1)
+    {
+      var hsl = RGB2HSL(flagclr);
+      flagclr = HSL2RGB(SetRGBaValue(hsl, GetRGBaValue(hsl, 2) / 2, 2));
+    }
 
     if(flag->IsFullyCaptured())
       nameclr = flagclr;
@@ -267,12 +266,21 @@ private func UpdateScoreboard()
       nameclr = RGB(255, 255, 255);
     else
       nameclr = RGB(127,127,127);
-    var percentclr = RGBa(Interpolate2(interpolationTarget, GetRGBaValue(flagclr, 1), prog, 100),
-    Interpolate2(interpolationTarget, GetRGBaValue(flagclr, 2), prog, 100), 
-    Interpolate2(interpolationTarget, GetRGBaValue(flagclr, 3), prog, 100));
+
+    if(teams >= 2)
+      interpolationTarget = 255;
+    else
+      interpolationTarget = 127;
+
+    var prog = flag->GetProcess();
+    var percentclr = RGBa(
+       Interpolate2(interpolationTarget, GetRGBaValue(flagclr, 1), prog, 100),
+       Interpolate2(interpolationTarget, GetRGBaValue(flagclr, 2), prog, 100), 
+       Interpolate2(interpolationTarget, GetRGBaValue(flagclr, 3), prog, 100)
+     );
 
     SetScoreboardData(row, GOCC_FlagColumn, Format("<c %x>%s</c>", nameclr, GetName(flag)), row);
-    SetScoreboardData(row, GOCC_ProgressColumn, Format("<c %x>%d%</c>", percentclr, flag->GetProcess()));
+    SetScoreboardData(row, GOCC_ProgressColumn, Format("<c %x>%d%</c>", percentclr, prog));
     row++;
   }
 
@@ -315,7 +323,7 @@ public func FlagAttacked(object pFlag, int iTeam)
   UpdateScoreboard();
 }
 
-public func FlagLost(object pFlag, int iTeam, int iTeamAttacker, array pAttackers, bool gavetickets)
+public func FlagLost(object pFlag, int iTeam, int iTeamAttacker, array pAttackers)
 {
   //Punkte bei Belohnungssystem
   var i = 0;
@@ -348,12 +356,9 @@ public func FlagLost(object pFlag, int iTeam, int iTeamAttacker, array pAttacker
       }
     }
   }
-  // subtract tickets
-  if(gavetickets)
-    DoTickets(iTeam, -TicketsPerFlag());
 }
 
-public func FlagCaptured(object pFlag, int iTeam, array pAttackers, bool fRegained, bool gavetickets)
+public func FlagCaptured(object pFlag, int iTeam, array pAttackers, bool fRegained)
 {
   //Punkte bei Belohnungssystem
   if(fRegained)
@@ -392,11 +397,8 @@ public func FlagCaptured(object pFlag, int iTeam, array pAttackers, bool fRegain
       i++;
     }
 
+    DoTickets(iTeam, 3);
   }
-
-  // add tickets
-  if(!gavetickets)
-    DoTickets(iTeam, TicketsPerFlag());
 
   //Eventnachricht: Flaggenposten erobert
   EventInfo4K(0, Format("$MsgFlagCaptured$", GetTeamColor(iTeam), GetTeamName(iTeam), GetName(pFlag)), IC10, 0, GetTeamColor(iTeam), 0, "Info_Objective.ogg");

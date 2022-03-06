@@ -5,7 +5,6 @@
 local team, process, range, flag, bar, attacker, spawnpoints, trend, capt, pAttackers, lastowner, iconState, captureradiusmarker, noenemys, nofriends;
 local startflagforteam;
 local capturableby; // array of booleans (index: team index)
-local gavetickets; // bool: whether 5 tickets were given to any team
 
 public func GetAttacker()		{return attacker;}
 public func GetTeam()			{return team;}
@@ -39,7 +38,6 @@ public func Initialize()
     flag = CreateObject(OFLG);
   //HUD-Anzeige erstmals einrichten
   process = 0;
-  gavetickets = false;
   UpdateFlag();
 }
 
@@ -357,9 +355,8 @@ public func Capture(int iTeam, bool bSilent)
   if(!bSilent)
   {
     if(lastowner == team) fRegained = true;
-    GameCallEx("FlagCaptured", this, team, pAttackers, fRegained, gavetickets);
+    GameCallEx("FlagCaptured", this, team, pAttackers, fRegained);
   }
-  gavetickets = true;
   lastowner = team;
   ResetAttackers();
   UpdateFlag();
@@ -404,26 +401,13 @@ public func UpdateFlag()
     {
       if(GetPlayerTeam(GetPlayerByIndex(i)) != team) continue;
       flag->SetOwner(GetPlayerByIndex(i));
-      // Frontlines: desaturate flag if it isn't capturable by an enemy team
-      if(CountCapturableBy() == 1)
-      {
-        var hsl = RGB2HSL(flag->GetColorDw());
-        var newColor = HSL2RGB(SetRGBaValue(hsl, GetRGBaValue(hsl, 2) / 2, 2));
-        flag->SetColorDw(newColor);
-      }
       break;
     }
   }
   else
   {
     SetOwner(NO_OWNER, flag);
-    // Desaturating doesn't work for white, reduce lightness instead
-    var color;
-    if(CountCapturableBy() >= 1)
-      color = RGB(255, 255, 255);
-    else
-      color = RGB(127,127,127);
-    flag->SetColorDw(color);
+    flag->SetColorDw(RGB(255, 255, 255));
   }
 
   //Flaggenposition aktualisieren
@@ -494,8 +478,7 @@ public func DoProcess(int iTeam, int iAmount)
   if((process <= 0) && (old > 0))
   {
     if(team && lastowner != iTeam) {
-      GameCallEx("FlagLost", this, team, iTeam, pAttackers, gavetickets);
-      gavetickets = false;
+      GameCallEx("FlagLost", this, team, iTeam, pAttackers);
     }
     attacker = 0;
     capt = false;
