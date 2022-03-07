@@ -600,7 +600,7 @@ private func TeamAlive(int teamnumber)
   // game hasn't started yet
   if(FindObject(CHOS))
     return true;
-  return GetTeamPlayerCount(teamnumber) > 0 && GetTickets(teamnumber) > 0;
+  return GetTeamPlayerCount(teamnumber) && GetTickets(teamnumber);
 }
 
 private func GetTeamWithAllFlags()
