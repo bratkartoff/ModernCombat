@@ -606,11 +606,37 @@ private func TeamAlive(int teamnumber)
 private func GetTeamWithAllFlags()
 {
   var flags = GetFlags();
-  var first = flags[0]->GetFrontlinesTeam();
+  var allFrontlinesCaptured = true;
+  var team = flags[0]->GetTeam();
   for(var flag in flags)
-    if(flag->GetFrontlinesTeam() != first)
+  {
+    var flagTeam = flag->GetTeam();
+    if(flagTeam && flagTeam != team)
       return nil;
-  return first;
+    if(!flag->IsFrontlinesFullyCaptured())
+      allFrontlinesCaptured = false;
+  }
+
+
+  if(allFrontlinesCaptured)
+    return team;
+  // not all flags have 100%, but all have been captured
+  // check if there are still players that could recapture them
+  // (not dead or waiting in the spawn menu)
+  for(var count = GetPlayerCount(), i = 0; i < count; i++) {
+    var p = GetPlayerByIndex(i);
+    if(GetPlayerTeam(p) != team)
+    {
+      var clonk = GetCursor(p);
+      if(IsFakeDeath(clonk) ||
+        (GetID(Contained(clonk)) == OSPW && GetAction(Contained(clonk)) != "Counter") ||
+        GetID(Contained(clonk)) == TIM1 ||
+        GetID(Contained(clonk)) == TIM2)
+        continue;
+      return nil;
+    }
+  }
+  return team;
 }
 
 private func GetOnlyTeamAlive()

@@ -105,9 +105,14 @@ public func SetCapturableBy(int teamnumber, bool capturable)
 }
 
 // IsFullyCaptured already exists and returns whether the flag was captured least once
+public func IsFrontlinesFullyCaptured()
+{
+  return process == 100;
+}
+
 public func IsFrontlinesFullyCapturedBy(int teamnumber)
 {
-  return teamnumber == team && process == 100;
+  return teamnumber == team && IsFrontlinesFullyCaptured();
 }
 
 // like GetTeam(), but returns the team iff IsFrontlinesFullyCapturedBy(team) == true
