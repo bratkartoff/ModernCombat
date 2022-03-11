@@ -1,9 +1,12 @@
 /*-- Flaggenwähler --*/
 
-#strict 2
+#strict 3
 
 local szFunction, iClass;
 local spawn,flagpoles,selection,oldvisrange,oldvisstate;
+
+local icons;
+local icons_arr;
 
 public func IsSpawnObject()	{return true;}
 
@@ -14,6 +17,14 @@ public func Initialize()
 {
   SetVisibility(VIS_Owner);
   szFunction = "";
+  icons = {};
+  icons_arr = [];
+}
+
+public func Destruction()
+{
+  for(var icon in icons_arr)
+    RemoveObject(icon);
 }
 
 global func CreateGOCCSpawner(object pCrew, int iChoosedClass)
@@ -110,9 +121,9 @@ global func GetFlagDistance(object pFlag)
 // todo: why is this global (lots of FindObject calls)
 global func GetBestFlag(int iTeam)
 {
-  var capture;
+  var capture = 0;
   var best;
-  var dist;
+  var dist = 0;
   var flags = [];
 
   var gocc = FindGOCC();
@@ -193,19 +204,16 @@ public func SpawnMenu()
 
   //CloseMenu(crew);
 
-  var tmp,point;
+  var point;
   if(GetMenu(crew))
     ClearMenuItems(crew);
   else
-    CreateMenu(OFLG,crew,0,C4MN_Extra_Info,"$SpawnMenu$",0,C4MN_Style_Dialog);
+    CreateMenu(OFLG,crew,nil,C4MN_Extra_Info,"$SpawnMenu$",0,C4MN_Style_Dialog);
 
   for(point in flagpoles)
   {
-    tmp = GraphicsHelper(point);
-    if(!tmp) continue;
-
-    AddMenuItem(GetName(point),"SelectFlagpole2",GetID(),crew,point->GetProcess(),ObjectNumber(point),"",4,tmp);
-    RemoveObject(tmp);
+    var icon = GraphicsHelper(point);
+    AddMenuItem(GetName(point),"SelectFlagpole2",GetID(),crew,point->GetProcess(),ObjectNumber(point),"",4,icon);
   }
 
   SelectMenuItem(selection,crew);
@@ -298,34 +306,49 @@ protected func GraphicsHelper(object pFlagpole)
 {
   if(!pFlagpole) return;
 
-  var tmp = CreateObject(GetID());
+  var icon = GetIcon(pFlagpole->IsAttacked(), pFlagpole->GetTrend());
 
   if(!pFlagpole->GetTeam())
-    SetColorDw(RGB(255,255,255),tmp);
+    SetColorDw(RGB(255,255,255),icon);
   else
   {
     if(pFlagpole->GetProcess() >= 100)
-      SetColorDw(GetTeamColor(pFlagpole->GetTeam()),tmp);
+      SetColorDw(GetTeamColor(pFlagpole->GetTeam()),icon);
     else
-      SetColorDw(SetRGBaValue(GetTeamColor(pFlagpole->GetTeam()), 255/2, 0),tmp);
+      // todo: use hsl discoloration
+      SetColorDw(SetRGBaValue(GetTeamColor(pFlagpole->GetTeam()), 255/2, 0),icon);
   }
 
-  if(pFlagpole->IsAttacked())
-  {
-    //SetGraphics ("WARN",tmp,GetID(tmp),1,GFXOV_MODE_Picture);
-  }
+  return icon;
+}
 
-  if(pFlagpole->GetTrend())
-  {
-    /*
-    if(pFlagpole->GetTrend() < 0)
-      SetGraphics ("DOWN",tmp,GetID(tmp),2,GFXOV_MODE_Picture);
-    else
-      SetGraphics ("UP",tmp,GetID(tmp),2,GFXOV_MODE_Picture);
-      */
-  }
+private func GetIcon(bool warn, int trend)
+{
+  var trend_str;
+  if(trend > 0)
+    trend_str = "UP";
+  else if(trend < 0)
+    trend_str = "DOWN";
+  else
+    trend_str = "NONE";
 
-  return tmp;
+
+  var cached = icons?[warn]?[trend_str];
+  if(cached) return cached;
+
+  if(icons?[warn] == nil)
+    icons[warn] = {};
+
+  var icon = CreateObject(CICN);
+  if(warn)
+    SetGraphics("WARN",icon,GetID(icon),1,GFXOV_MODE_Picture);
+  
+  if(trend_str != "NONE")
+    SetGraphics(trend_str,icon,GetID(icon),2,GFXOV_MODE_Picture);
+
+  icons[warn][trend_str] = icon;
+  icons_arr[] = icon;
+  return icon;
 }
 
 protected func GetSelected()
