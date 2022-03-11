@@ -1,6 +1,7 @@
 name := "CMC_Operation_Metro_Frontlines.c4s"
 start:
-	clonk "ModernCombat.c4f/Classic.c4f/CMC_OperationMetro.c4s"
+	#cd /opt/LegacyClonk; gdb -x gdbcommands ./clonk 
+	cd /opt/LegacyClonk; clonk  "ModernCombat.c4f/Classic.c4f/CMC_OperationMetro.c4s"
 
 copy: pack
 	cp ~/tst/{{name}} /opt/LegacyClonk
