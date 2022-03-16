@@ -5,9 +5,6 @@
 local szFunction, iClass;
 local spawn,flagpoles,selection,oldvisrange,oldvisstate;
 
-local icons;
-local icons_arr;
-
 public func IsSpawnObject()	{return true;}
 
 
@@ -17,14 +14,6 @@ public func Initialize()
 {
   SetVisibility(VIS_Owner);
   szFunction = "";
-  icons = {};
-  icons_arr = [];
-}
-
-public func Destruction()
-{
-  for(var icon in icons_arr)
-    RemoveObject(icon);
 }
 
 global func CreateGOCCSpawner(object pCrew, int iChoosedClass)
@@ -204,16 +193,15 @@ public func SpawnMenu()
 
   //CloseMenu(crew);
 
-  var point;
   if(GetMenu(crew))
     ClearMenuItems(crew);
   else
     CreateMenu(OFLG,crew,nil,C4MN_Extra_Info,"$SpawnMenu$",0,C4MN_Style_Dialog);
 
-  for(point in flagpoles)
+  for(var flag in flagpoles)
   {
-    var icon = GraphicsHelper(point);
-    AddMenuItem(GetName(point),"SelectFlagpole2",GetID(),crew,point->GetProcess(),ObjectNumber(point),"",4,icon);
+    SetColorForMenu(flag);
+    AddMenuItem(GetName(flag),"SelectFlagpole2",GetID(),crew,flag->GetProcess(),ObjectNumber(flag),"",C4MN_Add_ImgIndexed, GetIconIndex(flag));
   }
 
   SelectMenuItem(selection,crew);
@@ -302,53 +290,32 @@ protected func MenuQueryCancel()
   return !spawn;
 }
 
-protected func GraphicsHelper(object pFlagpole)
+private func SetColorForMenu(object pFlagpole)
 {
-  if(!pFlagpole) return;
+  if(!pFlagpole) return; // todo: is this check really necessary?
 
-  var icon = GetIcon(pFlagpole->IsAttacked(), pFlagpole->GetTrend());
 
+  var color;
   if(!pFlagpole->GetTeam())
-    SetColorDw(RGB(255,255,255),icon);
+    color = RGB(255,255,255);
   else
   {
     if(pFlagpole->GetProcess() >= 100)
-      SetColorDw(GetTeamColor(pFlagpole->GetTeam()),icon);
+      color = GetTeamColor(pFlagpole->GetTeam());
     else
       // todo: use hsl discoloration
-      SetColorDw(SetRGBaValue(GetTeamColor(pFlagpole->GetTeam()), 255/2, 0),icon);
+      color = SetRGBaValue(GetTeamColor(pFlagpole->GetTeam()), 255/2, 0);
   }
 
-  return icon;
+  SetColorDw(color);
 }
 
-private func GetIcon(bool warn, int trend)
+private func GetIconIndex(object flag)
 {
-  var trend_str;
-  if(trend > 0)
-    trend_str = "UP";
-  else if(trend < 0)
-    trend_str = "DOWN";
-  else
-    trend_str = "NONE";
-
-
-  var cached = icons?[warn]?[trend_str];
-  if(cached) return cached;
-
-  if(icons?[warn] == nil)
-    icons[warn] = {};
-
-  var icon = CreateObject(CICN);
-  if(warn)
-    SetGraphics("WARN",icon,GetID(icon),1,GFXOV_MODE_Picture);
-  
-  if(trend_str != "NONE")
-    SetGraphics(trend_str,icon,GetID(icon),2,GFXOV_MODE_Picture);
-
-  icons[warn][trend_str] = icon;
-  icons_arr[] = icon;
-  return icon;
+  // trend is -1, 0, or 1, warn is a boolean
+  var warn = flag->IsAttacked();
+  var trend = flag->GetTrend();
+  return 1 + trend + 3 * warn;
 }
 
 protected func GetSelected()

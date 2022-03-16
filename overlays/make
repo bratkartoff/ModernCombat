@@ -1,0 +1,15 @@
+#!/bin/bash
+mkdir res
+rm -f res.png
+convert     Base.png -colorspace sRGB Down.png -background None -layers flatten res/Down.png
+cp Base.png                                                                     res/Base.png
+convert     Base.png -colorspace sRGB   Up.png -background None -layers flatten res/Up.png
+convert res/Down.png -colorspace sRGB Warn.png -background None -layers flatten res/DownWarn.png
+convert     Base.png -colorspace sRGB Warn.png -background None -layers flatten res/Warn.png
+convert   res/Up.png -colorspace sRGB Warn.png -background None -layers flatten res/UpWarn.png
+
+magick res/Down.png res/Base.png res/Up.png res/DownWarn.png res/Warn.png res/UpWarn.png +append res.png
+
+magick Overlay.png Overlay.png Overlay.png Overlay.png Overlay.png Overlay.png  +append overlay.png
+
+rm -rf res
