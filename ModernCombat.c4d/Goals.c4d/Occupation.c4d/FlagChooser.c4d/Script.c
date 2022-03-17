@@ -191,7 +191,7 @@ public func SpawnMenu()
   var team = GetPlayerTeam(GetOwner(crew));
   if(!team) return;
 
-  //CloseMenu(crew);
+  if(!MenuNeedsUpdate()) return;
 
   if(GetMenu(crew))
     ClearMenuItems(crew);
@@ -317,6 +317,39 @@ private func GetIconIndex(object flag)
   var trend = flag->GetTrend();
   return 1 + trend + 3 * warn;
 }
+
+local last_frame_values;
+private func MenuNeedsUpdate()
+{
+  if (!last_frame_values)
+  {
+    last_frame_values = {};
+    for(var flag in flagpoles)
+      last_frame_values[flag] = ChangeDetectionState(flag);
+    return true;
+  }
+  else
+  {
+    var did_change = false;
+    for(var flag in flagpoles)
+    {
+      var current_state = ChangeDetectionState(flag);
+      if (current_state != last_frame_values[flag])
+      {
+        last_frame_values[flag] = current_state;
+        did_change = true;
+      }
+    }
+    return did_change;
+  }
+}
+
+// MenuNeedsUpdate will compare these array, if any value changes the menu will update
+private func ChangeDetectionState(flag)
+{
+  return [flag->IsAttacked(), flag->GetTrend(), flag->GetProcess(), GetName(flag)];
+}
+
 
 protected func GetSelected()
 {
