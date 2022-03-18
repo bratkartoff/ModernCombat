@@ -200,8 +200,7 @@ public func SpawnMenu()
 
   for(var flag in flagpoles)
   {
-    SetColorForMenu(flag);
-    AddMenuItem(GetName(flag),"SelectFlagpole2",GetID(),crew,flag->GetProcess(),ObjectNumber(flag),"",C4MN_Add_ImgIndexed, GetIconIndex(flag));
+    AddMenuItem(GetName(flag),"SelectFlagpole2",GetID(),crew,flag->GetProcess(),ObjectNumber(flag),"",C4MN_Add_ImgIndexedColor, GetIconIndex(flag), GetColorForMenu(flag));
   }
 
   SelectMenuItem(selection,crew);
@@ -290,11 +289,8 @@ protected func MenuQueryCancel()
   return !spawn;
 }
 
-private func SetColorForMenu(object pFlagpole)
+private func GetColorForMenu(object pFlagpole)
 {
-  if(!pFlagpole) return; // todo: is this check really necessary?
-
-
   var color;
   if(!pFlagpole->GetTeam())
     color = RGB(255,255,255);
@@ -307,7 +303,7 @@ private func SetColorForMenu(object pFlagpole)
       color = SetRGBaValue(GetTeamColor(pFlagpole->GetTeam()), 255/2, 0);
   }
 
-  SetColorDw(color);
+  return color;
 }
 
 private func GetIconIndex(object flag)
