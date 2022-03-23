@@ -57,7 +57,7 @@ protected func Collection2(object pObject)
     }
   }
 
-  SpawnMenu();
+  SpawnMenu(true);
   SelectBestFlag();
 }
 
@@ -183,7 +183,7 @@ public func Spawn()
   return 1;
 }
 
-public func SpawnMenu()
+public func SpawnMenu(bool forceUpdate)
 {
   var crew = Contents();
   if(!crew) return;
@@ -191,12 +191,13 @@ public func SpawnMenu()
   var team = GetPlayerTeam(GetOwner(crew));
   if(!team) return;
 
-  if(!MenuNeedsUpdate()) return;
+  if(!forceUpdate && !MenuNeedsUpdate()) return;
 
   if(GetMenu(crew))
     ClearMenuItems(crew);
   else
     CreateMenu(OFLG,crew,nil,C4MN_Extra_Info,"$SpawnMenu$",0,C4MN_Style_Dialog);
+
 
   for(var flag in flagpoles)
   {
@@ -221,31 +222,31 @@ protected func SelectFlagpole2(id unused,int iObject)
   SelectFlagpole(Object(iObject));
 }
 
-public func SelectFlagpole(object pObject)
+public func SelectFlagpole(object flag)
 {
   var crew = Contents();
   if(!crew) return;
 
-  if((pObject->GetTeam() != GetPlayerTeam(GetOwner(crew))) || (!pObject->IsFullyCaptured()))
+  if((!flag->IsSpawnableForTeam(GetPlayerTeam(GetOwner(crew)))))
   {
     SetPlrViewRange(0, crew);
-    SpawnMenu();
+    SpawnMenu(true);
     return Sound("Error", false, crew, 100, GetOwner(crew)+1);
   }
 
   SetPlrViewRange(Min(200, oldvisrange), crew);//Nicht mehr als maximal 200px sehen.
 
   var X, Y, szFunc;
-  pObject->GetSpawnPoint(X, Y, szFunc, GetOwner(crew));
+  flag->GetSpawnPoint(X, Y, szFunc, GetOwner(crew));
 
-  SetPosition(GetX(pObject) + X, GetY(pObject) + Y);
+  SetPosition(GetX(flag) + X, GetY(flag) + Y);
 
   if(szFunc) szFunction = szFunc;
 
   SpawnOk();
 
   if(FindObject(MCSL))
-    FindObject(MCSL)->SpawnEventInfo(Format("$SpawnAt$", GetName(pObject)), GetOwner(crew), iClass, FindObject(GOCC));
+    FindObject(MCSL)->SpawnEventInfo(Format("$SpawnAt$", GetName(flag)), GetOwner(crew), iClass, FindObject(GOCC));
 
   CloseMenu(crew);
 }
@@ -264,7 +265,7 @@ protected func Timer()
   if(GetSelected())
     ShowFlagpole(GetSelected(), Contents(), this, oldvisrange);
 
-  SpawnMenu();
+  SpawnMenu(false);
 }
 
 protected func OnMenuSelection(int iSelection)

@@ -61,6 +61,11 @@ public func Set(string szName, int iRange, int iSpeed, int iValue)
   AddEffect("IntFlagpole",this,10,iSpeed,this);
 }
 
+public func IsSpawnableForTeam(int teamnumber)
+{
+  return team == teamnumber && IsFullyCaptured();
+}
+
 /* Frontlines */
 private func IsFrontlines() { return capturableby != nil; }
 
