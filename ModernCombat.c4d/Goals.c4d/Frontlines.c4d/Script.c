@@ -248,39 +248,8 @@ private func UpdateScoreboard()
   //Flaggenposten auflisten
   for(var flag in GetFlags())
   {
-    //Teamfarbe und Flaggenzustand ermitteln
-    var nameclr, interpolationTarget;
-    var teams = flag->CountCapturableBy();
-
-    var flagclr = flag->GetFlagColor();
-    // desaturate if the flag isn't capturable by an enemy team
-    if(flag->GetTeam() && teams == 1)
-    {
-      var hsl = RGB2HSL(flagclr);
-      flagclr = HSL2RGB(SetRGBaValue(hsl, GetRGBaValue(hsl, 2) / 2, 2));
-    }
-
-    if(flag->IsFullyCaptured())
-      nameclr = flagclr;
-    else if(teams >= 1)
-      nameclr = RGB(255, 255, 255);
-    else
-      nameclr = RGB(127,127,127);
-
-    if(teams >= 2)
-      interpolationTarget = 255;
-    else
-      interpolationTarget = 127;
-
-    var prog = flag->GetProcess();
-    var percentclr = RGBa(
-       Interpolate2(interpolationTarget, GetRGBaValue(flagclr, 1), prog, 100),
-       Interpolate2(interpolationTarget, GetRGBaValue(flagclr, 2), prog, 100), 
-       Interpolate2(interpolationTarget, GetRGBaValue(flagclr, 3), prog, 100)
-     );
-
-    SetScoreboardData(row, GOCC_FlagColumn, Format("<c %x>%s</c>", nameclr, GetName(flag)), row);
-    SetScoreboardData(row, GOCC_ProgressColumn, Format("<c %x>%d%</c>", percentclr, prog));
+    SetScoreboardData(row, GOCC_FlagColumn, Format("<c %x>%s</c>", flag->GetScoreboardNameColor(), GetName(flag)), row);
+    SetScoreboardData(row, GOCC_ProgressColumn, Format("<c %x>%d%</c>", flag->GetScoreboardPercentColor(), flag->GetProcess()));
     row++;
   }
 

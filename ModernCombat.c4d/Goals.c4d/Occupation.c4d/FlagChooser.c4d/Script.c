@@ -200,7 +200,17 @@ public func SpawnMenu()
 
   for(var flag in flagpoles)
   {
-    AddMenuItem(GetName(flag),"SelectFlagpole2",GetID(),crew,flag->GetProcess(),ObjectNumber(flag),"",C4MN_Add_ImgIndexedColor, GetIconIndex(flag), GetColorForMenu(flag));
+    AddMenuItem(
+      GetName(flag), // szCaption
+      "SelectFlagpole2", // scCommand
+      GetID(), // idItem
+      crew, // pMenuObject
+      flag->GetProcess(), // iCount
+      ObjectNumber(flag), // iParameter
+      "", // szInfoCaption
+      C4MN_Add_ImgIndexedColor, // iExtra
+      GetIconIndex(flag), // XPar1 (icon facet index)
+      flag->GetScoreboardNameColor()); // XPar2 (image colorByOwner color)
   }
 
   SelectMenuItem(selection,crew);
@@ -287,23 +297,6 @@ global func ShowFlagpole(object pObject, object pCrew, object pContainer, int iM
 protected func MenuQueryCancel()
 {
   return !spawn;
-}
-
-private func GetColorForMenu(object pFlagpole)
-{
-  var color;
-  if(!pFlagpole->GetTeam())
-    color = RGB(255,255,255);
-  else
-  {
-    if(pFlagpole->GetProcess() >= 100)
-      color = GetTeamColor(pFlagpole->GetTeam());
-    else
-      // todo: use hsl discoloration
-      color = SetRGBaValue(GetTeamColor(pFlagpole->GetTeam()), 255/2, 0);
-  }
-
-  return color;
 }
 
 private func GetIconIndex(object flag)

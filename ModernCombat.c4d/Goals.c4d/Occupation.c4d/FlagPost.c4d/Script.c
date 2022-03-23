@@ -98,6 +98,7 @@ public func CountCapturableBy()
   return teams;
 }
 
+
 public func SetCapturableBy(int teamnumber, bool capturable)
 {
   capturableby[teamnumber] = capturable;
@@ -121,6 +122,45 @@ public func GetFrontlinesTeam()
   if(process == 100)
     return GetTeam();
   return nil;
+}
+
+private func GetScoreboardFlagColor()
+{
+  var flagclr = flag->GetColorDw();
+  var teams = CountCapturableBy();
+  // desaturate if the flag isn't capturable by an enemy team
+  if(team && teams == 1)
+  {
+    var hsl = RGB2HSL(flagclr);
+    flagclr = HSL2RGB(SetRGBaValue(hsl, GetRGBaValue(hsl, 2) / 2, 2));
+  }
+  return flagclr;
+}
+
+public func GetScoreboardNameColor()
+{
+  if(IsFullyCaptured())
+    return GetScoreboardFlagColor();
+  else if(CountCapturableBy() >= 1) // neutral flag that can be captured
+    return RGB(255, 255, 255);
+  else // uncapturable neutral flag
+    return RGB(127,127,127);
+}
+
+public func GetScoreboardPercentColor()
+{
+  var interpolationTarget;
+  if(CountCapturableBy() >= 2)
+    interpolationTarget = 255;
+  else
+    interpolationTarget = 127;
+
+  var flagclr = GetScoreboardFlagColor();
+  return RGBa(
+     Interpolate2(interpolationTarget, GetRGBaValue(flagclr, 1), process, 100),
+     Interpolate2(interpolationTarget, GetRGBaValue(flagclr, 2), process, 100), 
+     Interpolate2(interpolationTarget, GetRGBaValue(flagclr, 3), process, 100)
+   );
 }
 
 
@@ -160,7 +200,8 @@ public func IsAttacked()
   {
     if(Contained(clonk) && !Contained(clonk)->~IsHelicopter()) continue;
     if(GetOwner(clonk) == NO_OWNER) continue;
-    if(GetPlayerTeam(GetOwner(clonk)) != team)
+    var enemyTeam = GetPlayerTeam(GetOwner(clonk));
+    if(enemyTeam != team && IsCapturableBy(enemyTeam))
       return true;
   }
 
@@ -423,6 +464,8 @@ public func GetFlagColor()
 {
   return flag->GetColorDw();
 }
+
+
 
 protected func SetFlagPos(int iPercentage)
 {
