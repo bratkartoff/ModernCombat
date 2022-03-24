@@ -20,7 +20,7 @@ public func IsFlagpole()		{return true;}		//Ist ein Flaggenposten
 public func IsSpawnable()		{return true;}		//Einstiegspunkt
 
 static const BAR_FlagBar = 5;
-
+static const COLOR_WHITE = 16777215; // RGB(255, 255, 255);
 
 /* Initalisierung */
 
@@ -96,13 +96,14 @@ public func IsCapturableBy(int teamnumber)
 
 public func CountCapturableBy()
 {
+  if (!IsFrontlines())
+    return GetTeamCount();
   var teams = 0;
   for(var i = 0; i < GetTeamCount(); i++)
     if(IsCapturableBy(GetTeamByIndex(i)))
       teams++;
   return teams;
 }
-
 
 public func SetCapturableBy(int teamnumber, bool capturable)
 {
@@ -129,43 +130,39 @@ public func GetFrontlinesTeam()
   return nil;
 }
 
-private func GetScoreboardFlagColor()
+private func GetFlagColor()
 {
-  var flagclr = flag->GetColorDw();
-  var teams = CountCapturableBy();
-  // desaturate if the flag isn't capturable by an enemy team
-  if(team && teams == 1)
-  {
-    var hsl = RGB2HSL(flagclr);
-    flagclr = HSL2RGB(SetRGBaValue(hsl, GetRGBaValue(hsl, 2) / 2, 2));
-  }
-  return flagclr;
+  return flag->GetColorDw();
 }
 
-public func GetScoreboardNameColor()
+private func Desaturate(int color)
 {
-  if(IsFullyCaptured())
-    return GetScoreboardFlagColor();
-  else if(CountCapturableBy() >= 1) // neutral flag that can be captured
-    return RGB(255, 255, 255);
-  else // uncapturable neutral flag
+  if (color == COLOR_WHITE) // reducing saturation doesn't work for white, reduce lightness instead
     return RGB(127,127,127);
+  var hsl = RGB2HSL(GetFlagColor());
+  return HSL2RGB(SetRGBaValue(hsl, GetRGBaValue(hsl, 2) / 2, 2));
+}
+
+public func GetNameColor()
+{
+  if(!IsFullyCaptured())
+    return COLOR_WHITE;
+  return GetFlagColor();
 }
 
 public func GetScoreboardPercentColor()
 {
-  var interpolationTarget;
-  if(CountCapturableBy() >= 2)
-    interpolationTarget = 255;
-  else
-    interpolationTarget = 127;
+  // interpolating first and then desaturating doesn't work because Desaturate does not actually desature
+  var color = GetFlagColor();
+  var white = COLOR_WHITE;
 
-  var flagclr = GetScoreboardFlagColor();
-  return RGBa(
-     Interpolate2(interpolationTarget, GetRGBaValue(flagclr, 1), process, 100),
-     Interpolate2(interpolationTarget, GetRGBaValue(flagclr, 2), process, 100), 
-     Interpolate2(interpolationTarget, GetRGBaValue(flagclr, 3), process, 100)
-   );
+  if(CountCapturableBy() < 2)
+  {
+    color = Desaturate(color);
+    white = Desaturate(white);
+  }
+  
+  return InterpolateRGBa3(white, color, process, 100);
 }
 
 
@@ -464,13 +461,6 @@ public func UpdateFlag()
   //Flaggenposition aktualisieren
   SetFlagPos(process);
 }
-
-public func GetFlagColor()
-{
-  return flag->GetColorDw();
-}
-
-
 
 protected func SetFlagPos(int iPercentage)
 {

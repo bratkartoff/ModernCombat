@@ -248,7 +248,12 @@ private func UpdateScoreboard()
   //Flaggenposten auflisten
   for(var flag in GetFlags())
   {
-    SetScoreboardData(row, GOCC_FlagColumn, Format("<c %x>%s</c>", flag->GetScoreboardNameColor(), GetName(flag)), row);
+    var namecolor = flag->GetNameColor();
+    var teams = flag->CountCapturableBy();
+    if (!teams || teams == 1 && flag->IsFullyCaptured())
+      namecolor = flag->Desaturate(namecolor);
+
+    SetScoreboardData(row, GOCC_FlagColumn, Format("<c %x>%s</c>", namecolor, GetName(flag)), row);
     SetScoreboardData(row, GOCC_ProgressColumn, Format("<c %x>%d%</c>", flag->GetScoreboardPercentColor(), flag->GetProcess()));
     row++;
   }

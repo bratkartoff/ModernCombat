@@ -198,9 +198,14 @@ public func SpawnMenu(bool forceUpdate)
   else
     CreateMenu(OFLG,crew,nil,C4MN_Extra_Info,"$SpawnMenu$",0,C4MN_Style_Dialog);
 
+  var team = GetPlayerTeam(GetOwner(crew));
 
   for(var flag in flagpoles)
   {
+    var color = flag->GetNameColor();
+    if (!flag->IsSpawnableForTeam(team))
+      color = flag->Desaturate(color);
+
     AddMenuItem(
       GetName(flag), // szCaption
       "SelectFlagpole2", // scCommand
@@ -211,7 +216,7 @@ public func SpawnMenu(bool forceUpdate)
       "", // szInfoCaption
       C4MN_Add_ImgIndexedColor, // iExtra
       GetIconIndex(flag), // XPar1 (icon facet index)
-      flag->GetScoreboardNameColor()); // XPar2 (image colorByOwner color)
+      color); // XPar2 (image colorByOwner color)
   }
 
   SelectMenuItem(selection,crew);
