@@ -75,6 +75,11 @@ public func SetStartFlagForTeam(int teamnumber)
   Capture(teamnumber, true);
 }
 
+public func IsStartFlagForTeam(int teamnumber)
+{
+  return startflagforteam == teamnumber;
+}
+
 // todo: colors
 public func InitCapturableArray()
 {
@@ -88,7 +93,7 @@ public func IsCapturableBy(int teamnumber)
   if (!IsFrontlines())
     return true;
   // start flags are always recapturable
-  if (teamnumber == startflagforteam)
+  if (IsStartFlagForTeam())
     return true;
   // set by Frontlines goal object via SetCapturableBy
   return capturableby[teamnumber];
@@ -103,6 +108,11 @@ public func CountCapturableBy()
     if(IsCapturableBy(GetTeamByIndex(i)))
       teams++;
   return teams;
+}
+
+public func IsBacklineFlag()
+{
+  return CountCapturableBy() == 1 && IsFullyCaptured();
 }
 
 public func SetCapturableBy(int teamnumber, bool capturable)
@@ -170,23 +180,7 @@ public func GetScoreboardPercentColor()
 
 public func AddSpawnPoint(int iX, int iY, string szFunction)
 {
-  var i = GetLength(spawnpoints);
-  spawnpoints[i] = CreateArray();
-  spawnpoints[i][0] = AbsX(iX);
-  spawnpoints[i][1] = AbsY(iY);
-  spawnpoints[i][2] = szFunction;
-}
-
-public func GetSpawnPoint(int &iX, int &iY, string &szFunction, int iPlr)
-{
-  if(!GetLength(spawnpoints))
-  {
-    iY = -30;
-    return;
-  }
-
-  var iX, iY, szFunction;
-  szFunction = GetBestSpawnpoint(spawnpoints, iPlr, iX, iY)[2];
+  spawnpoints[] = [iX, iY, szFunction];
 }
 
 public func ResetSpawnPoint()
@@ -578,14 +572,6 @@ public func MoveFlagpost(int iX, int iY, string szName, int iRange, bool fNeutra
 
   //Reichweite setzen
   if(iRange) range = iRange;
-
-  //Spawnpunkte anpassen
-  var curX = GetX(), curY = GetY();
-  for(var i = 0; i < GetLength(spawnpoints); i++)
-  {
-    spawnpoints[i][0] -= iX - curX;
-    spawnpoints[i][1] -= iY - curY;
-  }
 
   //Reichweitenanzeige vorhanden: Entfernen
   if(captureradiusmarker)

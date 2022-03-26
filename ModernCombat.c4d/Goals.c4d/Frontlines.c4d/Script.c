@@ -249,8 +249,7 @@ private func UpdateScoreboard()
   for(var flag in GetFlags())
   {
     var namecolor = flag->GetNameColor();
-    var teams = flag->CountCapturableBy();
-    if (!teams || teams == 1 && flag->IsFullyCaptured())
+    if (!flag->CountCapturableBy() || flag->IsBacklineFlag())
       namecolor = flag->Desaturate(namecolor);
 
     SetScoreboardData(row, GOCC_FlagColumn, Format("<c %x>%s</c>", namecolor, GetName(flag)), row);
@@ -763,6 +762,31 @@ public func OnClassSelection(object pClonk, int iClass)
 
   CreateGOCCSpawner(pClonk, iClass);
 }
+
+public func GetSpawnPoint(object selectedFlag, int &iX, int &iY, string &szFunction, int iPlr)
+{
+  var spawnpoints = [];
+  var team = GetPlayerTeam(iPlr);
+  if (
+    selectedFlag->IsStartFlagForTeam(team) ||
+    selectedFlag->IsBacklineFlag()
+  )
+    spawnpoints = selectedFlag.spawnpoints;
+  else
+  {
+    // frontline flag: also consider other flags in group and neighboring groups
+    var group = GetGroup(selectedFlag);
+    var neighbors = GetNeighbors(group);
+    neighbors[] = group;
+    for (var flaggroup in neighbors)
+      for (var flag in flaggroup)
+        if (flag->IsSpawnableForTeam(team))
+          spawnpoints ..= flag.spawnpoints;
+  }
+
+  szFunction = global->GetBestSpawnpoint(spawnpoints, iPlr, iX, iY)[2];
+}
+
 
 public func DoFlag(int iTeam, int iPlr)
 {
