@@ -675,26 +675,33 @@ public func ChooserFinished()
 
     // flag 2
     aFlag[i] = CreateObject(OFPL,2620,370,NO_OWNER);
+    if(frnGoalObj)
+    {
+      // upper station
+      aFlag[i] -> AddSpawnPoint(2190,290);
+      aFlag[i] -> AddSpawnPoint(3050,290);
+      aFlag[i] -> AddSpawnPoint(2380,370);
+      aFlag[i] -> AddSpawnPoint(2860,370);
+
+      aFlag[i]->Set("$Flag2a$");
+      i++;
+
+      // flag 2b: lower station
+      aFlag[i] = CreateObject(OFPL,2620,620,NO_OWNER);
+      aFlag[i]->Set("$Flag2b$");
+    }
+    else // OCC: one flag
+    {
+      aFlag[i]->Set("$Flag2$");
+    }
+
+    // spawn points at lower station
+    // they will be added to the upper station in OCC
+    // this is intentional
     aFlag[i] -> AddSpawnPoint(2470,520);
     aFlag[i] -> AddSpawnPoint(2530,610);
     aFlag[i] -> AddSpawnPoint(2710,610);
     aFlag[i] -> AddSpawnPoint(2770,520);
-    if(frnGoalObj)
-    {
-      aFlag[i]->Set("$Flag2a$");
-      i++;
-
-      // flag 2b
-      aFlag[i] = CreateObject(OFPL,2620,620,NO_OWNER);
-      // todo spawn points
-      aFlag[i] -> AddSpawnPoint(2470,520);
-      aFlag[i] -> AddSpawnPoint(2530,610);
-      aFlag[i] -> AddSpawnPoint(2710,610);
-      aFlag[i] -> AddSpawnPoint(2770,520);
-      aFlag[i]->Set("$Flag2b$");
-    }
-    else // OCC: one flag
-      aFlag[i]->Set("$Flag2$");
     i++;
 
     // flag 3
