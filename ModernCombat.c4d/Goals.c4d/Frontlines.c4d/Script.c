@@ -763,14 +763,17 @@ public func OnClassSelection(object pClonk, int iClass)
   CreateGOCCSpawner(pClonk, iClass);
 }
 
-public func GetSpawnPoint(object selectedFlag, int &iX, int &iY, string &szFunction, int iPlr)
+public func GetSpawnPoint(object selectedFlag, int &iX, int &iY, string &szFunction, object clonk)
 {
   var spawnpoints = [];
+  var spawnSuggestion;
+  var iPlr = GetOwner(clonk);
   var team = GetPlayerTeam(iPlr);
   if (
     selectedFlag->IsStartFlagForTeam(team) ||
     selectedFlag->IsBacklineFlag()
   )
+    // spawnSuggestion not set in order to use all spawns
     spawnpoints = selectedFlag.spawnpoints;
   else
   {
@@ -782,9 +785,17 @@ public func GetSpawnPoint(object selectedFlag, int &iX, int &iY, string &szFunct
       for (var flag in flaggroup)
         if (flag->IsSpawnableForTeam(team))
           spawnpoints ..= flag.spawnpoints;
+
+    spawnSuggestion = [GetX(selectedFlag), GetY(selectedFlag)]; // spawnSuggestion
   }
 
-  szFunction = global->GetBestSpawnpoint(spawnpoints, iPlr, iX, iY)[2];
+  szFunction = global->GetBestSpawnpoint(
+    spawnpoints,
+    iPlr,
+    iX, iY,
+    clonk,
+    spawnSuggestion
+  )[2];
 }
 
 

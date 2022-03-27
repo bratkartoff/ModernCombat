@@ -242,8 +242,7 @@ public func SelectFlagpole(object flag)
   SetPlrViewRange(Min(200, oldvisrange), crew);//Nicht mehr als maximal 200px sehen.
 
   var X = 0, Y = 0, szFunc;
-  FindGOCC()->GetSpawnPoint(flag, X, Y, szFunc, GetOwner(crew));
-  //flag->GetSpawnPoint(X, Y, szFunc, GetOwner(crew));
+  FindGOCC()->GetSpawnPoint(flag, X, Y, szFunc, crew);
 
   SetPosition(X, Y);
 

@@ -848,9 +848,9 @@ public func OnClassSelection(object pClonk, int iClass)
   CreateGOCCSpawner(pClonk, iClass);
 }
 
-public func GetSpawnPoint(object selectedFlag, int &iX, int &iY, string &szFunction, int iPlr)
+public func GetSpawnPoint(object selectedFlag, int &iX, int &iY, string &szFunction, object clonk)
 {
-  szFunction = GetBestSpawnpoint(selectedFlag["spawnpoints"], iPlr, iX, iY)[2];
+  szFunction = GetBestSpawnpoint(selectedFlag["spawnpoints"], GetOwner(clonk), iX, iY, clonk)[2];
 }
 
 public func DoFlag(int iTeam, int iPlr)

@@ -226,16 +226,32 @@ static const SPAWNSYS_Traps		= -40;	//Eine feindliche Falle
 static const SPAWNSYS_CheckRange	= 400;	//Reichweite der Prüfung
 static const SPAWNSYS_OptimalRange	= 50;	//Optimale Reichweite für Verbündete
 static const SPAWNSYS_Precision		= 1000;	//Genauigkeit
+static const SPAWNSYS_WiggleRoom	= 200;	//Erlaubter Abstand des Spawns zum nächstgelegenen Spawn
 
-global func GetBestSpawnpoint(array aSpawnpoints, int iPlr, int &x, int &y)
+// iPlr required even though it should always be GetOwner(clonk),
+// because the helicopter chooser does not create the clonk before choosing
+// if clonk is nil (goals != frontlines which I won't change because I'd have to copy them to the testing c4d)
+// Find_Exclude will exclude "this", which doesn't matter because
+// the object is irrelevant anyway
+global func GetBestSpawnpoint(array aSpawnpoints, int iPlr, int &x, int &y, object clonk, array spawnSuggestion)
 {
   var team = GetPlayerTeam(iPlr);
   var spawn_grading = [];
   for(var spawn in aSpawnpoints)
   {
     var i = GetLength(spawn_grading);
-    spawn_grading[i] = [spawn, 0];
-    for(var obj in FindObjects(Find_Distance(SPAWNSYS_CheckRange, spawn[0], spawn[1]), Find_Or(Find_OCF(OCF_CrewMember), Find_And(Find_Hostile(iPlr), Find_Func("IsSpawnTrap")))))
+    var dist = 0;
+    if (spawnSuggestion)
+      dist = Distance(spawn[0], spawn[1], spawnSuggestion[0], spawnSuggestion[1]);
+    spawn_grading[i] = [spawn, 0, dist];
+    for(var obj in FindObjects(
+      Find_Distance(SPAWNSYS_CheckRange, spawn[0], spawn[1]),
+      Find_Or(
+        Find_OCF(OCF_CrewMember),
+        Find_And(
+          Find_Hostile(iPlr),
+          Find_Func("IsSpawnTrap"))),
+      Find_Exclude(clonk)))
     {
       if(GetOCF(obj) & OCF_CrewMember)
       {
@@ -253,18 +269,30 @@ global func GetBestSpawnpoint(array aSpawnpoints, int iPlr, int &x, int &y)
     }
   }
 
-  var highest = 0x80000000;
-  var chosen_spawns = [];
-  for(var spawn_data in spawn_grading)
+  // determine spawns with highest score
+  var spawn_data;
+  var highest_score = 0x80000000;
+  for(spawn_data in spawn_grading)
   {
-    if(spawn_data[1] > highest)
-    {
-      chosen_spawns = [spawn_data[0]];
-      highest = spawn_data[1];
-    }
-    else if(spawn_data[1] == highest)
-      chosen_spawns[GetLength(chosen_spawns)] = spawn_data[0];
+    if(spawn_data[1] > highest_score)
+      highest_score = spawn_data[1];
   }
+
+  var filtered_spawns = [];
+  for(spawn_data in spawn_grading)
+    if(spawn_data[1] == highest_score)
+      filtered_spawns[GetLength(filtered_spawns)] = spawn_data;
+  
+  // determine spawns with lowest distance
+  var lowest_distance = 0x7FFFFFFF;
+  for(spawn_data in filtered_spawns)
+    if(spawn_data[2] < lowest_distance)
+      lowest_distance = spawn_data[2];
+
+  var chosen_spawns = [];
+  for(spawn_data in filtered_spawns)
+    if(spawn_data[2] <= lowest_distance + SPAWNSYS_WiggleRoom)
+      chosen_spawns[GetLength(chosen_spawns)] = spawn_data[0];
 
   var spawnpoint = chosen_spawns[Random(GetLength(chosen_spawns))];
   x = spawnpoint[0];
