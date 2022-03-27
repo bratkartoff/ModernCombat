@@ -237,7 +237,6 @@ global func GetBestSpawnpoint(array aSpawnpoints, int iPlr, int &x, int &y)
     spawn_grading[i] = [spawn, 0];
     for(var obj in FindObjects(Find_Distance(SPAWNSYS_CheckRange, spawn[0], spawn[1]), Find_Or(Find_OCF(OCF_CrewMember), Find_And(Find_Hostile(iPlr), Find_Func("IsSpawnTrap")))))
     {
-      Log("found object %v, spawn", obj, spawn);
       if(GetOCF(obj) & OCF_CrewMember)
       {
         if(Hostile(iPlr, GetOwner(obj)))
@@ -256,7 +255,6 @@ global func GetBestSpawnpoint(array aSpawnpoints, int iPlr, int &x, int &y)
 
   var highest = 0x80000000;
   var chosen_spawns = [];
-  Log("spawn_grading %v", spawn_grading);
   for(var spawn_data in spawn_grading)
   {
     if(spawn_data[1] > highest)
@@ -268,7 +266,6 @@ global func GetBestSpawnpoint(array aSpawnpoints, int iPlr, int &x, int &y)
       chosen_spawns[GetLength(chosen_spawns)] = spawn_data[0];
   }
 
-  Log("chosen_spawns %v", chosen_spawns);
   var spawnpoint = chosen_spawns[Random(GetLength(chosen_spawns))];
   x = spawnpoint[0];
   y = spawnpoint[1];
