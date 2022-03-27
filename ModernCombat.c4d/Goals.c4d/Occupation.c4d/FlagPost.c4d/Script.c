@@ -93,7 +93,7 @@ public func IsCapturableBy(int teamnumber)
   if (!IsFrontlines())
     return true;
   // start flags are always recapturable
-  if (IsStartFlagForTeam())
+  if (IsStartFlagForTeam(teamnumber))
     return true;
   // set by Frontlines goal object via SetCapturableBy
   return capturableby[teamnumber];
