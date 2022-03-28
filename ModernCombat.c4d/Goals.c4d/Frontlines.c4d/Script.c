@@ -3,20 +3,12 @@
 #strict 3
 #include TEAM
 
-local iStartTickets;
-local iWarningTickets;
 local aTicket;
 local aTeamTimers;
 local aFlagGroups; // array of groups (group: array of flags)
 local aFlags; // same information, for performance. Only used for reading
 
-private func StartTickets()		{return 25;}		//Standardticketzahl
-private func TicketsPerFlag()		{return 3;}
 public func IsConfigurable()		{return true;}
-public func GoalExtraValue()					//Spielzielinformationen an Scoreboard weitergeben
-{
-  return iStartTickets;
-}
 public func CustomSpawnSystem()		{return true;}
 public func RejectChoosedClassInfo()	{return true;}
 public func GoalDescription()
@@ -26,15 +18,6 @@ public func GoalDescription()
 
 
 /* Initialisierung */
-
-protected func Initialize()
-{
-  aTicket = [];
-  //Ticketzahl vorgeben
-  iStartTickets = StartTickets();
-
-  return _inherited();
-}
 
 public func Activate(iPlr)
 {
@@ -88,19 +71,9 @@ public func ChooserFinished()
 {
   ScheduleCall(this(),"InitScoreboard",1);
 
-  //Ticketalarm an Ticketzahl anpassen
-  if(iStartTickets < 4)
-    iWarningTickets = 0;
-  else
-    iWarningTickets = Max(iStartTickets/4, 5);
-
   //Bei Klassenwahl Spawnsystem anpassen
   if(!FindObject(MCSL))
     ScheduleCall(0,"CreateSpawners",1);
-
-  //Tickets verteilen
-  for(var i = 0; i < GetTeamCount(); i++)
-    DoTickets(GetTeamByIndex(i), iStartTickets);
 }
 
 public func CreateSpawners()
@@ -128,24 +101,6 @@ public func GetFlags()
   return aFlags;
 }
 
-/* HUD */
-
-public func GetHUDInfo(int player, object hud)
-{
-  var str;
-
-  if(GetTeamCount() > 0)
-  {
-    str = Format("<c %x>%d</c>",GetTeamColor(1),GetTickets(1));
-
-    if(GetTeamCount() > 1)
-      for(var i = 2; i <= GetTeamCount(); i++)
-        Format("%s : <c %x>%d</c>",GetTeamName(i),GetTeamColor(i),GetTickets(i));
-  }
-
-  return str;
-}
-
 /* Konfiguration */
 
 local iChoosedPlr;
@@ -171,47 +126,10 @@ private func OpenGoalMenu(id dummy, int iSelection)
   var pClonk = GetCursor(iChoosedPlr);
   CreateMenu(GetID(),pClonk,nil,0,"",0,1);
 
-  //Ticketanzeige
-  AddMenuItem("$Tickets$", "", SM03, pClonk, iStartTickets);
-
-  //Ticketlimits ermitteln
-  var uplimit = 100; var downlimit = 5;
-  if(GetLeague())
-  {
-    uplimit = 40; downlimit = 10;
-  }
-
-  //Mehr Tickets
-  if(iStartTickets < uplimit)
-    AddMenuItem("$MoreTickets$", "ChangeStartTickets", GetID(), pClonk, 0, +5, "$MoreTickets$",2,1); else
-    AddMenuItem("<c 777777>$MoreTickets$</c>", "ChangeStartTickets", GetID(), pClonk, 0, +5, "$MoreTickets$",2,1);
-
-  //Weniger Tickets
-  if(iStartTickets > downlimit)
-    AddMenuItem("$LessTickets$", "ChangeStartTickets", GetID(), pClonk, 0, -5, "$LessTickets$",2,2); else
-    AddMenuItem("<c 777777>$LessTickets$</c>", "ChangeStartTickets", GetID(), pClonk, 0, -5, "$LessTickets$",2,2);
-
   //Fertig
   AddMenuItem("$Finished$", "ConfigFinished", GetID(), pClonk,0,0,"$Finished$",2,3);
 
   SelectMenuItem(iSelection, pClonk);
-}
-
-private func ChangeStartTickets(id dummy, int iChange)
-{
-  //Sound
-  Sound("Grab",1,nil,0,1);
-
-  //Ticketstand verändern
-  if(!GetLeague())
-    iStartTickets = BoundBy(iStartTickets+iChange,5,100);
-  else
-    iStartTickets = BoundBy(iStartTickets+iChange,10,40);
-
-  //Menü erneut öffnen
-  var iSel = 1;
-  if(iChange < 0) iSel = 2;
-  OpenGoalMenu(0, iSel);
 }
 
 /* Scoreboard */
@@ -254,35 +172,6 @@ private func UpdateScoreboard()
 
     SetScoreboardData(row, GOCC_FlagColumn, Format("<c %x>%s</c>", namecolor, GetName(flag)), row);
     SetScoreboardData(row, GOCC_ProgressColumn, Format("<c %x>%d%</c>", flag->GetScoreboardPercentColor(), flag->GetProcess()));
-    row++;
-  }
-
-  //Leerzeile und Spaltentitel
-  if(row != 1)
-  {
-    SetScoreboardData(row, GOCC_FlagColumn, " ", row);
-    SetScoreboardData(row, GOCC_ProgressColumn, " ");
-    row++;
-    SetScoreboardData(row, GOCC_FlagColumn, "{{SM26}}", row);
-    SetScoreboardData(row, GOCC_ProgressColumn, "{{SM03}}");
-    row++;
-  }
-
-  //Teams und deren Timer und Tickets auflisten
-  var maxTickets = iStartTickets + GetLength(GetFlags()) * TicketsPerFlag();
-  for(var j = 0; j < GetTeamCount(); j++)
-  {
-    var iTeam = GetTeamByIndex(j);
-    if(TeamAlive(iTeam))
-    {
-      SetScoreboardData(row, GOCC_FlagColumn, Format("<c %x>%s</c>", GetTeamColor(iTeam), GetTeamName(iTeam)), row+3+maxTickets-GetTickets(iTeam));
-      SetScoreboardData(row, GOCC_ProgressColumn, Format("<c ffbb00>%d</c>", GetTickets(iTeam)));
-    }
-    else
-    {
-      SetScoreboardData(row, GOCC_FlagColumn, 0);
-      SetScoreboardData(row, GOCC_ProgressColumn, 0);
-    }
     row++;
   }
 
@@ -349,8 +238,6 @@ public func FlagCaptured(object pFlag, int iTeam, array pAttackers, bool fRegain
     var wealthBonus = 15;
     var icon = IC10;
     var pointType = "OPConquest";
-    var ticketMessage = Format("<c ffff33>{{SM03}}</c> +%d", TicketsPerFlag());
-    DoTickets(iTeam, TicketsPerFlag());
 
     for(var pClonk in pAttackers)
     {
@@ -360,8 +247,6 @@ public func FlagCaptured(object pFlag, int iTeam, array pAttackers, bool fRegain
       DoAchievementProgress(1, AC07, GetOwner(pClonk));
       // Geldbonus
       DoWealth(GetOwner(pClonk), wealthBonus);
-      // Nachricht Ticketbonus
-      AddEffect("PointMessage", pClonk, 130, 1, pClonk, 0, ticketMessage);
 
       // different value for capturing assist
       pointType = "OPConquestAssist";
@@ -482,55 +367,6 @@ private func SetGroupCapturableBy(array flagGroup, int teamnumber, bool capturab
 }
 
 
-/* Tickets */
-public func GetTeamTimer(int iTeam)
-{
-  if(!aTeamTimers)
-    return 0;
-
-  return (aTeamTimers[iTeam-1] / 100);
-}
-
-public func GetTickets(int iTeam)
-{
-  return aTicket[iTeam-1] || 0;
-}
-
-public func SetTickets(int iTeam, int iTickets)
-{
-  aTicket[iTeam-1] = Max(iTickets, 0);
-  UpdateScoreboard();
-  return true;
-}
-
-public func DoTickets(int iTeam, int iChange, bool fNoWarn)
-{
-  SetTickets(iTeam, GetTickets(iTeam) + iChange);
-  if(!fNoWarn)
-  {
-    if(iWarningTickets != 0 && iWarningTickets == aTicket[iTeam-1])
-    {
-      Schedule(Format("GameCallEx(\"TicketsLow\", %d, %d)", aTicket[iTeam-1], iTeam), 1);
-    }
-  }
-  return true;
-}
-
-/* Eventnachrichten */
-
-public func TicketsLow(int iRemaining, int iTeam)
-{
-  for(var i = 0; i < GetPlayerCount(); i++)
-  {
-    if(GetPlayerTeam(GetPlayerByIndex(i)) == iTeam)
-    {
-      //Eventnachricht: Warnung vor niedrigen Tickets
-      EventInfo4K(GetPlayerByIndex(i)+1,Format("$MsgTicketsLow$",iRemaining),SM03,0,0,0,"Info_Event.ogg");
-    }
-  }
-  return true;
-}
-
 /* Rundenauswertung */
 
 local fFulfilled;
@@ -573,7 +409,7 @@ private func TeamAlive(int teamnumber)
   // game hasn't started yet
   if(FindObject(CHOS))
     return true;
-  return GetTeamPlayerCount(teamnumber) && GetTickets(teamnumber);
+  return GetTeamPlayerCount(teamnumber);
 }
 
 private func GetTeamWithAllFlags()
@@ -741,8 +577,6 @@ protected func RelaunchPlayer(int iPlr, object pCrew, int iMurdererPlr, int iTea
     if(GetCursor(iPlr)) SetPlrViewRange(0, GetCursor(iPlr));
     return;
   }
-
-  DoTickets(iTeam,-1);
 
   //Spieler wartet noch auf Respawn
   if(GameCall("GetPlayerRespawnTime", iPlr))
