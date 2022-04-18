@@ -6,6 +6,7 @@
 local cur_Attachment;
 local iXDir, iYDir;
 local iXTendency, iYTendency;
+local bXKeyConflict, bYKeyConflict; // ob in JnR beide Tasten gedrückt sind
 local iBank;
 local iBankMax;
 local iSpeed;
@@ -83,6 +84,8 @@ protected func Initialize()
   Sound("MAVE_Engine.ogg", 0, 0, 70, 0, +1);
 
   SetAction("Wait");
+
+  bXKeyConflict = bYKeyConflict = false;
 }
 
 /* Positionsbestimmung */
@@ -1235,7 +1238,11 @@ public func ControlLeft(pByObj)
     return true;
   }
   if(iXTendency > 0)
+  {
+    if(GetPlrCoreJumpAndRunControl(GetController()))
+      bXKeyConflict = true;
     iXTendency = 0;
+  }
   else
     iXTendency = -iSpeed;
 
@@ -1254,6 +1261,7 @@ public func ControlLeftDouble(pByObj)
     return true;
   }
   iXTendency = -iSpeed;
+  bXKeyConflict = false;
 
   return true;
 }
@@ -1269,6 +1277,11 @@ public func ControlLeftReleased(pByObj)
     return true;
   }
   if(iXTendency < 0) iXTendency = 0;
+  if(bXKeyConflict)
+  {
+    bXKeyConflict = false;
+    iXTendency = iSpeed;
+  }
 
   return true;
 }
@@ -1285,7 +1298,11 @@ public func ControlRight(pByObj)
     return true;
   }
   if(iXTendency < 0)
+  {
+    if(GetPlrCoreJumpAndRunControl(GetController()))
+      bXKeyConflict = true;
     iXTendency = 0;
+  }
   else
     iXTendency = iSpeed;
 
@@ -1304,6 +1321,7 @@ public func ControlRightDouble(pByObj)
     return true;
   }
   iXTendency = iSpeed;
+  bXKeyConflict = false;
 
   return true;
 }
@@ -1319,6 +1337,11 @@ public func ControlRightReleased(pByObj)
     return true;
   }
   if(iXTendency > 0) iXTendency = 0;
+  if(bXKeyConflict)
+  {
+    bXKeyConflict = false;
+    iXTendency = -iSpeed;
+  }
 
   return true;
 }
@@ -1335,7 +1358,11 @@ public func ControlDown(pByObj)
     return true;
   }
   if(iYTendency < 0)
+  {
+    if(GetPlrCoreJumpAndRunControl(GetController()))
+      bYKeyConflict = true;
     iYTendency = 0;
+  }
   else
     iYTendency = iSpeed;
 
@@ -1347,6 +1374,11 @@ public func ControlDownReleased(pByObj)
   if(GetActionTarget(0, pByObj) == this) return false;
 
   if(iYTendency > 0) iYTendency = 0;
+  if(bYKeyConflict)
+  {
+    bYKeyConflict = false;
+    iYTendency = -iSpeed;
+  }
 
   return true;
 }
@@ -1357,6 +1389,7 @@ public func ControlDownDouble(pByObj)
   if(fIsAiming || GetAction() == "Wait") return true;
 
   iYTendency = iSpeed;
+  bYKeyConflict = false;
 
   return true;
 }
@@ -1367,7 +1400,11 @@ public func ControlUp(object pByObj)
   if(fIsAiming || GetAction() == "Wait") return true;
 
   if(iYTendency > 0)
+  {
+    if(GetPlrCoreJumpAndRunControl(GetController()))
+      bYKeyConflict = true;
     iYTendency = 0;
+  }
   else
     iYTendency = -iSpeed;
 
@@ -1379,6 +1416,11 @@ public func ControlUpReleased(pByObj)
   if(GetActionTarget(0, pByObj) == this) return false;
 
   if(iYTendency < 0) iYTendency = 0;
+  if(bYKeyConflict)
+  {
+    bYKeyConflict = false;
+    iYTendency = iSpeed;
+  }
 
   return true;
 }
@@ -1389,6 +1431,7 @@ public func ControlUpDouble(pByObj)
   if(fIsAiming || GetAction() == "Wait") return true;
 
   iYTendency = -iSpeed;
+  bYKeyConflict = false;
 
   return true;
 }
