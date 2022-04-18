@@ -1761,8 +1761,9 @@ public func ContactLeft()
     Collision(Abs(speed));
 
   iXDir = Abs(speed)/2;
-  if(iXTendency < 0)
-    iXTendency = 0;
+  if(!GetPlrCoreJumpAndRunControl(GetController()))
+    if(iXTendency < 0)
+      iXTendency = 0;
 }
 
 public func ContactRight()
@@ -1776,8 +1777,9 @@ public func ContactRight()
     Collision(speed);
 
   iXDir = -speed/2;
-  if(iXTendency > 0)
-    iXTendency = 0;
+  if(!GetPlrCoreJumpAndRunControl(GetController()))
+    if(iXTendency > 0)
+      iXTendency = 0;
 }
 
 public func ContactTop()
@@ -1791,8 +1793,9 @@ public func ContactTop()
     Collision(Abs(speed));
 
   iYDir = Abs(speed)/2;
-  if(iYTendency < 0)
-    iYTendency = 0;
+  if(!GetPlrCoreJumpAndRunControl(GetController()))
+    if(iYTendency < 0)
+      iYTendency = 0;
 }
 
 public func ContactBottom()
@@ -1806,8 +1809,9 @@ public func ContactBottom()
     Collision(speed);
 
   iYDir = -Abs(speed)/2;
-  if(iYTendency > 0)
-    iYTendency = 0;
+  if(!GetPlrCoreJumpAndRunControl(GetController()))
+    if(iYTendency > 0)
+      iYTendency = 0;
 }
 
 /* Aufschlag */
