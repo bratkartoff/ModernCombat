@@ -6,18 +6,27 @@
 local aTicket;
 local aTeamTimers;
 local aFlagGroups; // array of groups (group: array of flags)
-local aFlags; // same information, for performance. Only used for reading
+local aFlags; // same infojrmation, for performance. Only used for reading
+local timeLimitInMin; // only used during setup
+local timeLimitFrame; // we use this one once the game has started
+local bTimeIsUp; // true if FrameCounter() > timeLimitFrame. (Required to detect the transition)
 
 public func IsConfigurable()		{return true;}
 public func CustomSpawnSystem()		{return true;}
 public func RejectChoosedClassInfo()	{return true;}
-public func GoalDescription()
+public func GoalDescription()		{return "$GoalDesc$";}
+public func GoalExtraValue()		//Spielzielinformationen an Scoreboard weitergeben
 {
-  return "$GoalDesc$";
+  return Format("%02d:00", timeLimitInMin);
 }
 
+static const FPS = 36;
 
 /* Initialisierung */
+public func Initialize() {
+  bTimeIsUp = false;
+  timeLimitInMin = 30;
+}
 
 public func Activate(iPlr)
 {
@@ -70,6 +79,9 @@ public func LinearScenario(flags)
 public func ChooserFinished()
 {
   ScheduleCall(this(),"InitScoreboard",1);
+
+  var frames = timeLimitInMin * 60 * FPS;
+  timeLimitFrame = FrameCounter() + frames;
 
   //Bei Klassenwahl Spawnsystem anpassen
   if(!FindObject(MCSL))
@@ -126,10 +138,35 @@ private func OpenGoalMenu(id dummy, int iSelection)
   var pClonk = GetCursor(iChoosedPlr);
   CreateMenu(GetID(),pClonk,nil,0,"",0,1);
 
+  //time limit
+  AddTimeLimitMenuItem(timeLimitInMin >= 60, "$IncreaseTimeLimit$", +1, 1, pClonk);
+  AddTimeLimitMenuItem(timeLimitInMin <=  5, "$DecreaseTimeLimit$", -1, 2, pClonk);
+
   //Fertig
   AddMenuItem("$Finished$", "ConfigFinished", GetID(), pClonk,0,0,"$Finished$",2,3);
 
   SelectMenuItem(iSelection, pClonk);
+}
+
+private func AddTimeLimitMenuItem(bool grey, string text, int amount, int picture, object pClonk)
+{
+  var menuText = text;
+  if (grey) {
+    menuText = Format("<c 777777>%s</c>", text);
+  }
+  AddMenuItem(text, "AdjustTimeLimit", GetID(), pClonk, 0, amount, menuText, C4MN_Add_ImgIndexed | C4MN_Add_PassValue, picture, grey);
+}
+
+private func AdjustTimeLimit(id dummy, int direction, bool rightClicked, bool grey)
+{
+  Sound("Grab",1,this,0,1);
+  if (!grey)
+    timeLimitInMin += 5 * direction;
+
+  //Menü erneut öffnen
+  var iSel = 0;
+  if(direction < 0) iSel = 1;
+  OpenGoalMenu(0, iSel);
 }
 
 /* Scoreboard */
@@ -175,7 +212,45 @@ private func UpdateScoreboard()
     row++;
   }
 
+  // empty line
+  SetScoreboardData(row, GOCC_FlagColumn, "", row);
+  row++;
+
+  // time limit
+  var minutes = 0; seconds = 0;
+  var timeLimitColor = RGB(255, 255, 255);
+  var timeLimitTextColor = timeLimitColor;
+  if (timeLimitFrame == nil)
+  {
+    timeLimitTextColor = timeLimitColor = RGB(127, 127, 127);
+    minutes = timeLimitInMin;
+  }
+  else if (!bTimeIsUp) {
+    var seconds = (timeLimitFrame - FrameCounter()) / FPS;
+    if (seconds > 0) {
+      minutes = seconds / 60; 
+      seconds = seconds % 60;
+    }
+    else
+      TimeUp();
+  }
+
+  if (bTimeIsUp)
+    timeLimitColor = RGB(255, 0, 0);
+
+  SetScoreboardData(row, GOCC_FlagColumn, Format("<c %x>$TimeLimit$</c>", timeLimitTextColor), row);
+  SetScoreboardData(row, GOCC_ProgressColumn, Format("<c %x>%02d:%02d</c>", timeLimitColor, minutes, seconds));
+
+
   SortScoreboard(GOCC_FlagColumn);
+}
+
+private func TimeUp() {
+  bTimeIsUp = true;
+  //Eventnachricht: Zeit um und kein Team hat gewonnen
+  if (GetTimeLimitWinner() == nil)
+    // todo: icon
+    EventInfo4K(0, "$TimeUpDraw$", IC10, 0, RGB(255, 255, 255), 0, "Info_Objective.ogg");
 }
 
 /* GameCalls */
@@ -426,7 +501,6 @@ private func GetTeamWithAllFlags()
       allFrontlinesCaptured = false;
   }
 
-
   if(allFrontlinesCaptured)
     return team;
   // not all flags have 100%, but all have been captured
@@ -465,6 +539,34 @@ private func GetOnlyTeamAlive()
   return winningTeam;
 }
 
+private func GetTimeLimitWinner()
+{
+  if (!bTimeIsUp)
+    return nil;
+
+  // get the team that has most flagGroups
+  // returns nil if there is a draw
+  var bestTeam = nil;
+  var bestTeamGroups = 0;
+  for(var i = 0; i < GetTeamCount(); i++)
+  {
+    var team = GetTeamByIndex(i);
+    var nGroups = 0;
+    for (var group in aFlagGroups)
+      if (IsFullyCaptured(group, team))
+        nGroups++;
+    if (nGroups > bestTeamGroups)
+    {
+      bestTeam = team;
+      bestTeamGroups = nGroups;
+    }
+    else if (nGroups == bestTeamGroups)
+      bestTeam = nil;
+  }
+
+  return bestTeam;
+}
+
 private func GetWinningTeam()
 {
   // win condition 1: a team has all flags
@@ -476,7 +578,13 @@ private func GetWinningTeam()
   winningTeam = GetOnlyTeamAlive();
   if(winningTeam != nil)
     return winningTeam;
+
+  // win condition 3: time limit && more flags than the other team
+  winningTeam = GetTimeLimitWinner();
+  if(winningTeam != nil)
+    return winningTeam;
 }
+
 
 private func EliminateTeam(int iTeam)
 {

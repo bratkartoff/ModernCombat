@@ -10,8 +10,10 @@ MsgTicketsLow=<c ff0000>Achtung</c>: Unsere Verstärkung geht zu Neige, nur noch 
 // Hostmenü
 
 Tickets=Tickets
-MoreTickets=mehr Tickets
-LessTickets=weniger Tickets
+IncreaseTimeLimit=Zeitlimit erhöhen
+DecreaseTimeLimit=Zeitlimit verringern
+TimeUpDraw=Die Zeit ist abgelaufen! Das Team, das als erstes mehr Flaggen als das andere hat wird gewinnen!
+TimeLimit=Verbleibende Zeit
 Finished=Fertig
 
 // Rundenende
