@@ -26,6 +26,7 @@ static const FPS = 36;
 public func Initialize() {
   bTimeIsUp = false;
   timeLimitInMin = 30;
+  return inherited();
 }
 
 public func Activate(iPlr)
