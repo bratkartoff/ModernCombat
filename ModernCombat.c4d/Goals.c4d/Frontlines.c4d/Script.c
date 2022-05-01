@@ -545,27 +545,23 @@ private func GetTimeLimitWinner()
   if (!bTimeIsUp)
     return nil;
 
-  // get the team that has most flagGroups
-  // returns nil if there is a draw
-  var bestTeam = nil;
-  var bestTeamGroups = 0;
+  // the logic here assumes that the map is symmetrical and there are only two teams
+  // determine the central flags
+  var centralFlags;
+  var len = GetLength(aFlagGroups);
+  if (len % 2)
+    centralFlags = aFlagGroups[len / 2];
+  else
+    centralFlags = aFlagGroups[len / 2 - 1] .. aFlagGroups[len / 2];
+
+  // the winning team must hold the center
   for(var i = 0; i < GetTeamCount(); i++)
   {
     var team = GetTeamByIndex(i);
-    var nGroups = 0;
-    for (var group in aFlagGroups)
-      if (IsFullyCaptured(group, team))
-        nGroups++;
-    if (nGroups > bestTeamGroups)
-    {
-      bestTeam = team;
-      bestTeamGroups = nGroups;
-    }
-    else if (nGroups == bestTeamGroups)
-      bestTeam = nil;
+    if(IsFullyCaptured(centralFlags, team))
+      return team;
   }
-
-  return bestTeam;
+  return nil;
 }
 
 private func GetWinningTeam()
