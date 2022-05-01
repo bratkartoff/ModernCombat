@@ -25,7 +25,7 @@ static const FPS = 36;
 /* Initialisierung */
 public func Initialize() {
   bTimeIsUp = false;
-  timeLimitInMin = 30;
+  timeLimitInMin = 20;
   return inherited();
 }
 
