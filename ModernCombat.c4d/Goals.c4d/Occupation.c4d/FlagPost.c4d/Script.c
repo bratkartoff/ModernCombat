@@ -26,6 +26,7 @@ static const COLOR_WHITE = 16777215; // RGB(255, 255, 255);
 
 public func Initialize()
 {
+  capt = false;
   spawnpoints = CreateArray();
   pAttackers = CreateArray();
 
@@ -121,10 +122,10 @@ public func SetCapturableBy(int teamnumber, bool capturable)
   UpdateFlag();
 }
 
-// IsFullyCaptured already exists and returns whether the flag was captured least once
 public func IsFrontlinesFullyCaptured()
 {
-  return process == 100;
+  return IsFullyCaptured();
+  //return process == 100;
 }
 
 public func IsFrontlinesFullyCapturedBy(int teamnumber)
@@ -488,9 +489,7 @@ public func DoProcess(int iTeam, int iAmount)
   if(old > process)
     trend = -1;
 
-  if(IsFrontlines())
-    if((old == 100 && trend < 0))
-      GameCallEx("FlagFrontlinesStatusChange", this, team, false);
+  //  if((old == 100 && trend < 0))
 
   if((old == 100 && trend < 0) || (old == 0 && trend > 0))
   {
@@ -506,19 +505,21 @@ public func DoProcess(int iTeam, int iAmount)
   //Flagge ist fertig übernommen
   if((process >= 100) && (old < 100))
   {
+    Capture(iTeam);
     if(IsFrontlines())
       GameCallEx("FlagFrontlinesStatusChange", this, team, true);
-    Capture(iTeam);
   }
 
   //Neutrale Flagge
   if((process <= 0) && (old > 0))
   {
+    capt = false;
     if(team && lastowner != iTeam) {
       GameCallEx("FlagLost", this, team, iTeam, pAttackers);
+      if(IsFrontlines())
+        GameCallEx("FlagFrontlinesStatusChange", this, team, false);
     }
     attacker = 0;
-    capt = false;
     team = iTeam;
   }
 
