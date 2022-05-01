@@ -251,7 +251,7 @@ public func SelectFlagpole(object flag)
   SpawnOk();
 
   if(FindObject(MCSL))
-    FindObject(MCSL)->SpawnEventInfo(Format("$SpawnAt$", GetName(flag)), GetOwner(crew), iClass, FindObject(GOCC));
+    FindObject(MCSL)->SpawnEventInfo(Format("$SpawnAt$", GetName(flag)), GetOwner(crew), iClass, FindGOCC());
 
   CloseMenu(crew);
 }
