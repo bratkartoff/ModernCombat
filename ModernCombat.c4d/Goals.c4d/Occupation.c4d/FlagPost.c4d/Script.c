@@ -2,7 +2,7 @@
 
 #strict 3
 
-local team, process, range, flag, bar, attacker, spawnpoints, trend, capt, pAttackers, lastowner, iconState, captureradiusmarker, noenemys, nofriends;
+local team, process, range, flag, bar, attacker, spawnpoints, trend, capt, pAttackers, lastowner, currentIcon, captureradiusmarker, noenemys, nofriends;
 local startflagforteam;
 local capturableby; // array of booleans (index: team index)
 
@@ -21,6 +21,11 @@ public func IsSpawnable()		{return true;}		//Einstiegspunkt
 
 static const BAR_FlagBar = 5;
 static const COLOR_WHITE = 16777215; // RGB(255, 255, 255);
+
+static const OFPL_ICON_NORMAL     = SM21;
+static const OFPL_ICON_CONQUERING = SM22;
+static const OFPL_ICON_EMBATTLED  = SM23;
+static const OFPL_ICON_BACKLINE   = SM31; // frontlines only
 
 /* Initalisierung */
 
@@ -113,7 +118,8 @@ public func CountCapturableBy()
 
 public func IsBacklineFlag()
 {
-  return CountCapturableBy() == 1 && IsFullyCaptured();
+  var count = CountCapturableBy();
+  return !count || count == 1 & IsFullyCaptured();
 }
 
 public func SetCapturableBy(int teamnumber, bool capturable)
@@ -340,25 +346,19 @@ protected func Timer()
   {
     if(!friends)
     {
-      if(iconState != 0)
-      {
-        bar->SetIcon("", SM21, 0, 0, 32);
+      if(SetIcon(NormalIcon()))
         bar->Update(0, true, true);
-        iconState = 0;
-      }
     }
     else
     {
-      if(iconState != 2)
+      if(SetIcon(OFPL_ICON_EMBATTLED))
       {
         var clr = GetTeamColor(team), plr;
         if( (GetTeamConfig(TEAM_AutoGenerateTeams) && GetTeamPlayerCount(team) <= 1 && (plr = GetTeamMemberByIndex(team, 0)) > -1) || !GetTeamConfig(TEAM_TeamColors))
           clr = GetPlrColorDw(plr);
 
-        bar->SetIcon("", SM23, 0, 0, 32);
         bar->SetBarColor(clr);
         bar->Update(process);
-        iconState = 2;
       }
     }
   }
@@ -429,11 +429,10 @@ public func UpdateFlag()
   if(!bar)
   {
     bar = CreateObject(SBAR, 0, 0, -1);
-    bar->Set(this, RGB(255, 255, 255), BAR_FlagBar, 100, "", SM21, 0, 0, true, true);
+    bar->Set(this, RGB(255, 255, 255), BAR_FlagBar, 100, "", NormalIcon(), 0, 0, true, true);
     bar->ChangeDefOffset(GetDefOffset(GetID(), 1)+5);
-    bar->SetIcon("", SM21, 0, 0, 32);
+    SetIcon(NormalIcon());
     bar->Update(0, true, true);
-    iconState = 0;
   }
 
   //Entsprechend dem Besitzer färben
@@ -532,22 +531,29 @@ public func DoProcess(int iTeam, int iAmount)
   bar->SetBarColor(clr);
   if(process >= 100)
   {
-    if(iconState != 0)
-    {
-      bar->SetIcon("", SM21, 0, 0, 32);
+    if(SetIcon(NormalIcon()))
       bar->Update(0, true, true);
-      iconState = 0;
-    }
   }
-  else if(iconState != 1)
-  {
-    bar->SetIcon("", SM22, 0, 0, 32);
-    iconState = 1;
-  }
-  if(iconState != 0)
+  else SetIcon(OFPL_ICON_CONQUERING);
+
+  if(currentIcon != OFPL_ICON_NORMAL)
     bar->Update(process);
 
   return process;
+}
+
+private func NormalIcon() {
+  if (IsBacklineFlag())
+    return OFPL_ICON_BACKLINE;
+  return OFPL_ICON_NORMAL;
+}
+
+private func SetIcon(id newIcon) {
+  if(currentIcon == newIcon)
+    return false;
+  bar->SetIcon("", newIcon, 0, 0, 32);
+  currentIcon = newIcon;
+  return true;
 }
 
 /* Flaggenposten verschieben */

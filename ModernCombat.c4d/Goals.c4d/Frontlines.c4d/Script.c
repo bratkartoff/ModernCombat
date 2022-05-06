@@ -176,7 +176,7 @@ static const GOCC_FlagColumn		= 1;
 static const GOCC_ProgressColumn	= 3;
 
 protected func InitScoreboard()
-{  
+{
   //Wird noch eingestellt
   if(FindObject(CHOS) || IsFulfilled()) return;
 
@@ -205,7 +205,7 @@ private func UpdateScoreboard()
   for(var flag in GetFlags())
   {
     var namecolor = flag->GetNameColor();
-    if (!flag->CountCapturableBy() || flag->IsBacklineFlag())
+    if (flag->IsBacklineFlag())
       namecolor = flag->Desaturate(namecolor);
 
     SetScoreboardData(row, GOCC_FlagColumn, Format("<c %x>%s</c>", namecolor, GetName(flag)), row);
@@ -229,7 +229,7 @@ private func UpdateScoreboard()
   else if (!bTimeIsUp) {
     var seconds = (timeLimitFrame - FrameCounter()) / FPS;
     if (seconds > 0) {
-      minutes = seconds / 60; 
+      minutes = seconds / 60;
       seconds = seconds % 60;
     }
     else
@@ -619,7 +619,7 @@ public func FxIntWarnTimer(object pTarget, int iEffectNumber, int iEffectTime)
   var iNow;
   if(pPoint->GetTrend() || pPoint->GetAttacker())
    iNow = true;
-  
+
   if(iNow != iLast)
   {
      if((pPoint->GetTrend() >= 0) || !pPoint->GetAttacker())
@@ -651,7 +651,7 @@ protected func InitializePlayer(int iPlr, int iX, int iY, object pBase, int iTea
 
   //Verfeindung setzen
   Hostility(iPlr);
-  
+
   RelaunchPlayer(iPlr, GetCrew(iPlr), 0, iTeam, true);
 }
 
@@ -725,7 +725,7 @@ public func GetSpawnPoint(object selectedFlag, int &iX, int &iY, string &szFunct
         if (flag->IsSpawnableForTeam(team))
           spawnpoints ..= flag.spawnpoints;
 
-    spawnSuggestion = [GetX(selectedFlag), GetY(selectedFlag)]; // spawnSuggestion
+    spawnSuggestion = [GetX(selectedFlag), GetY(selectedFlag)];
   }
 
   szFunction = global->GetBestSpawnpoint(
